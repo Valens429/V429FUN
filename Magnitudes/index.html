@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Batalla de Magnitudes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080810;
+  --bg2: #0d0d1a;
+  --purple: #a855f7;
+  --cyan: #06b6d4;
+  --purple-dim: #7c3aed44;
+  --cyan-dim: #06b6d422;
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --border: #1e1e3a;
+  --glow-p: 0 0 40px #a855f755;
+  --glow-c: 0 0 40px #06b6d455;
+  --good: #10b981;
+  --bad: #ef4444;
+  --gold: #f59e0b;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  cursor: none;
+}
+
+body.reduced * {
+  animation-duration: 0.001s !important;
+  transition-duration: 0.001s !important;
+}
+
+.cursor {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  background: var(--cyan);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transition: transform 0.1s ease;
+}
+
+.cursor-ring {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--purple);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  transition: all 0.15s ease;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9000;
+  opacity: 0.3;
+}
+
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.15;
+}
+
+.blob-1 {
+  width: 600px;
+  height: 600px;
+  background: var(--purple);
+  top: -200px;
+  left: -200px;
+  animation: blobFloat 12s ease-in-out infinite;
+}
+
+.blob-2 {
+  width: 500px;
+  height: 500px;
+  background: var(--cyan);
+  bottom: 20%;
+  right: -150px;
+  animation: blobFloat 15s ease-in-out infinite reverse;
+}
+
+.blob-3 {
+  width: 300px;
+  height: 300px;
+  background: var(--purple);
+  bottom: 0;
+  left: 30%;
+  animation: blobFloat 10s ease-in-out infinite 3s;
+}
+
+@keyframes blobFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -30px) scale(1.05); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+canvas#bgfx {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: none;
+}
+
+button:focus-visible, .focusable:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.app {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.topbar {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 20px 0;
+}
+
+.brand {
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  text-shadow: var(--glow-c);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand b {
+  color: var(--purple);
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.topright {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.iconbtn {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+.iconbtn:hover {
+  border-color: var(--cyan);
+  box-shadow: var(--glow-c);
+  transform: translateY(-2px);
+}
+
+.herostreak {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0 10px;
+}
+
+.herostreak .lbl {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.herostreak .n {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 64px;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: transform .15s;
+}
+
+.herostreak .n.bump {
+  animation: bump .35s ease;
+}
+
+@keyframes bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+.herostreak .best {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.herostreak .best b {
+  color: var(--cyan);
+}
+
+.timerpill {
+  display: none;
+  align-items: baseline;
+  gap: 10px;
+  background: var(--bg2);
+  border: 1px solid var(--purple);
+  box-shadow: var(--glow-p);
+  border-radius: 999px;
+  padding: 8px 20px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+.timerpill .v {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--purple);
+}
+
+.stage {
+  width: 100%;
+  max-width: 900px;
+  padding: 20px 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.bossbanner {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--bad);
+  margin-bottom: 20px;
+  padding: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px dashed var(--bad);
+  border-radius: 8px;
+  animation: pulseBoss 1.3s infinite;
+}
+
+@keyframes pulseBoss {
+  0%, 100% { opacity: .6; box-shadow: 0 0 10px rgba(239, 68, 68, 0); }
+  50% { opacity: 1; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+}
+
+.boss-active .bossbanner {
+  display: flex;
+}
+
+.boss-active .arena {
+  transform: scale(1.02);
+}
+
+.arena {
+  display: grid;
+  grid-template-columns: 1fr 40px 1fr;
+  gap: 0;
+  width: 100%;
+  align-items: stretch;
+  transition: transform .35s, filter .2s;
+}
+
+.arena.glitch {
+  animation: glitchAnim .45s steps(3, end);
+}
+
+@keyframes glitchAnim {
+  0% { filter: none; transform: translate(0, 0); }
+  20% { filter: hue-rotate(90deg) saturate(2); transform: translate(4px, -3px); }
+  40% { filter: hue-rotate(-90deg) saturate(1.6); transform: translate(-4px, 3px); }
+  60% { filter: saturate(1.7); transform: translate(3px, 2px); }
+  80% { filter: hue-rotate(45deg); transform: translate(-2px, -2px); }
+  100% { filter: none; transform: translate(0, 0); }
+}
+
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 30px 24px;
+  display: flex;
+  flex-direction: column;
+  min-height: 260px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .3s, box-shadow .3s, transform .2s;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--purple-dim), var(--cyan-dim));
+  opacity: 0.1;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.card.left {
+  border-top: 3px solid var(--purple);
+}
+
+.card.right {
+  border-top: 3px solid var(--cyan);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.card.left:hover {
+  border-color: var(--purple);
+  box-shadow: var(--glow-p);
+}
+
+.card.right:hover {
+  border-color: var(--cyan);
+  box-shadow: var(--glow-c);
+}
+
+.card .eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.card .iconwrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+.card .titulo {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: auto;
+  min-height: 52px;
+  position: relative;
+  z-index: 2;
+}
+
+.card .numwrap {
+  margin-top: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.card .num {
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.card.right .num {
+  color: var(--muted);
+  letter-spacing: 2px;
+}
+
+.card.right .num.revealed {
+  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: normal;
+}
+
+.card.correct {
+  border-color: var(--good);
+  box-shadow: 0 0 40px rgba(16, 185, 129, 0.3);
+}
+
+.card.wrong {
+  border-color: var(--bad);
+  box-shadow: 0 0 40px rgba(239, 68, 68, 0.3);
+}
+
+.card.impact-punch {
+  animation: punch .38s ease;
+}
+
+@keyframes punch {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.card.shakecard {
+  animation: shake .5s ease;
+}
+
+.card.shakebig {
+  animation: shakeBig .7s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px) rotate(-.5deg); }
+  40% { transform: translateX(6px) rotate(.5deg); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+@keyframes shakeBig {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(-9px, 2px) rotate(-1.2deg); }
+  30% { transform: translate(9px, -2px) rotate(1.2deg); }
+  45% { transform: translate(-6px, 1px); }
+  60% { transform: translate(6px, -1px); }
+  80% { transform: translate(-3px, 0); }
+}
+
+.vs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Mono', monospace;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.controls {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.btn {
+  flex: 1;
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 20px 10px;
+  border: none;
+  cursor: none;
+  text-decoration: none;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-weight: 700;
+}
+
+.btn:active {
+  transform: scale(.97);
+}
+
+.btn:disabled {
+  opacity: .35;
+  pointer-events: none;
+}
+
+.btn-small {
+  background: transparent;
+  color: var(--cyan);
+  border: 1px solid var(--border);
+}
+
+.btn-small:hover:not(:disabled) {
+  border-color: var(--cyan);
+  background: var(--cyan-dim);
+  transform: translateY(-2px);
+  box-shadow: var(--glow-c);
+}
+
+.btn-big {
+  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  color: #000;
+}
+
+.btn-big:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--glow-p);
+}
+
+.rail {
+  margin-top: 40px;
+  width: 100%;
+  max-width: 900px;
+  padding: 0 20px 40px;
+  position: relative;
+}
+
+.rail .scale {
+  position: relative;
+  height: 4px;
+  background: linear-gradient(90deg, var(--cyan), var(--bg2) 35%, var(--bg2) 65%, var(--purple));
+  border: 1px solid var(--border);
+}
+
+.rail .marker {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--text);
+  box-shadow: 0 0 15px 2px var(--text);
+  transition: left .9s cubic-bezier(.2, .8, .2, 1);
+}
+
+.rail .ticks {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.rail .caption {
+  text-align: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 14px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.flash-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 45;
+  opacity: 0;
+  animation: flashAnim .55s ease forwards;
+}
+
+.flash-good {
+  background: radial-gradient(circle at 50% 45%, rgba(16, 185, 129, .2), transparent 70%);
+}
+
+.flash-bad {
+  background: radial-gradient(circle at 50% 45%, rgba(239, 68, 68, .2), transparent 70%);
+}
+
+@keyframes flashAnim {
+  0% { opacity: 0; }
+  12% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.toasts {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.toast {
+  background: var(--bg2);
+  border: 1px solid var(--cyan);
+  color: var(--text);
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  box-shadow: var(--glow-c);
+  animation: toastIn .25s ease, toastOut .4s ease 2.6s forwards;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toastOut {
+  to { opacity: 0; transform: translateY(-12px); }
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 8, 16, 0.9);
+  backdrop-filter: blur(5px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  padding: 20px;
+}
+
+.overlay.show {
+  display: flex;
+}
+
+.panel {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  max-width: 500px;
+  width: 100%;
+  padding: 40px;
+  text-align: center;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+}
+
+.panel h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 32px;
+  margin: 10px 0 8px;
+  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.panel .tag {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.modepick {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.modecard {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 20px;
+  text-align: left;
+  cursor: none;
+  transition: all .2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.modecard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--purple-dim), var(--cyan-dim));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.modecard:hover {
+  border-color: var(--cyan);
+  transform: translateX(4px);
+}
+
+.modecard:hover::before {
+  opacity: 1;
+}
+
+.modecard b {
+  display: block;
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  margin-bottom: 6px;
+  position: relative;
+  z-index: 2;
+}
+
+.modecard span {
+  font-size: 13px;
+  color: var(--muted);
+  position: relative;
+  z-index: 2;
+}
+
+.linklike {
+  color: var(--cyan);
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 1px;
+  cursor: none;
+  text-decoration: none;
+  background: none;
+  border: none;
+  transition: color 0.2s;
+}
+
+.linklike:hover {
+  color: var(--text);
+}
+
+.tutsteps {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+  margin: 20px 0 30px;
+}
+
+.tutstep {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.tutstep .num {
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  color: var(--purple);
+  font-size: 20px;
+  width: 24px;
+}
+
+.tutstep p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.tutstep small {
+  color: var(--muted);
+  display: block;
+  margin-top: 4px;
+}
+
+.bigbtn {
+  width: 100%;
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 16px;
+  border: none;
+  cursor: none;
+  transition: all 0.3s;
+  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  color: #000;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.bigbtn.alt {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.bigbtn.alt:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  transform: translateY(-2px);
+}
+
+.bigbtn:active {
+  transform: scale(.98);
+}
+
+.settingsrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.settingsrow:last-child {
+  border-bottom: none;
+}
+
+.switch {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: none;
+  transition: background 0.3s;
+}
+
+.switch.on {
+  background: var(--purple);
+  border-color: var(--purple);
+  box-shadow: var(--glow-p);
+}
+
+.switch .knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--text);
+  transition: left .2s;
+}
+
+.switch.on .knob {
+  left: 25px;
+}
+
+.endmoji {
+  font-size: 52px;
+  margin-bottom: 10px;
+}
+
+.scorerow {
+  font-family: 'Syne', sans-serif;
+  color: var(--text);
+  font-weight: 800;
+  font-size: 48px;
+  margin: 10px 0 0;
+  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.scorelabel {
+  color: var(--muted);
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: 24px;
+}
+
+.lesson {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.lesson b {
+  color: var(--cyan);
+}
+
+.statsgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.statbox {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 16px;
+  text-align: center;
+}
+
+.statbox .v {
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--purple);
+}
+
+.statbox .l {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-top: 6px;
+}
+
+.achlist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+  justify-content: center;
+}
+
+.achchip {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  background: var(--cyan-dim);
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  padding: 6px 12px;
+}
+
+.endbtns {
+  display: flex;
+  gap: 12px;
+}
+
+@media (max-width: 620px) {
+  .arena { grid-template-columns: 1fr; gap: 20px; }
+  .vs { display: none; }
+  .card { min-height: 200px; padding: 20px; }
+  .controls { flex-direction: column; }
+  .herostreak .n { font-size: 48px; }
+  .topbar { padding: 15px 15px 0; }
+  .stage { padding: 15px 15px 0; }
+  .hero-name { font-size: clamp(2.5rem, 6vw, 4rem); }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<canvas id="bgfx"></canvas>
+<div class="toasts" id="toasts"></div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="brand">----<span>_</span>--- <b>Magnitudes</b></div>
+    <div class="topright">
+      <button class="iconbtn" id="btnMute" title="Sonido">🔊</button>
+      <button class="iconbtn" id="btnSettings" title="Ajustes">⚙️</button>
+    </div>
+  </div>
+
+  <div class="herostreak">
+    <div class="lbl" id="streakLabel">RACHA</div>
+    <div class="n" id="streakNum">0</div>
+    <div class="best" id="bestRow" style="visibility:hidden;">Mejor de la sesión: <b id="bestNum">0</b></div>
+  </div>
+  <div class="timerpill" id="timerPill"><span>Tiempo</span><span class="v" id="timerNum">60</span></div>
+
+  <div class="stage">
+    <div class="bossbanner" id="bossBanner">⚠ Enfrentamiento legendario ⚠</div>
+
+    <div class="arena" id="arena">
+      <div class="card left" id="cardLeft">
+        <div class="eyebrow"><span class="iconwrap" id="iconLeft">🌍</span><span id="catLeft">Categoría</span></div>
+        <div class="titulo" id="textoLeft">—</div>
+        <div class="numwrap"><div class="num" id="numLeft">—</div></div>
+      </div>
+      <div class="vs">VS</div>
+      <div class="card right" id="cardRight">
+        <div class="eyebrow"><span class="iconwrap" id="iconRight">❔</span><span id="catRight">Categoría</span></div>
+        <div class="titulo" id="textoRight">—</div>
+        <div class="numwrap"><div class="num" id="numRight">???</div></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-small" id="btnChico">▼ Más chico</button>
+      <button class="btn btn-big" id="btnGrande">▲ Más grande</button>
+    </div>
+
+    <div class="rail">
+      <div class="scale"><div class="marker" id="marker"></div></div>
+      <div class="ticks"><span>10³</span><span>10²⁰</span><span>10⁴⁰</span><span>10⁶⁰</span><span>10⁸⁰</span><span>10¹⁰⁰</span><span>10¹²⁰⁺</span></div>
+      <div class="caption">Regla de magnitud — dónde vive este número en el universo de las cantidades</div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay show" id="startOverlay">
+  <div class="panel">
+    <div class="endmoji">⚡</div>
+    <h1>Batalla de Magnitudes</h1>
+    <div class="tag">Adiviná si el número escondido es más grande o más chico. Un solo error y se termina. Tu cerebro va a fallar más de lo que pensás.</div>
+    <div class="modepick" id="modePick">
+      <div class="modecard" data-mode="infinite"><b>🔥 Racha infinita</b><span>Un error y se termina todo. El juego se gana a los 100 puntos.</span></div>
+      <div class="modecard" data-mode="timeattack"><b>⏱ Contrarreloj</b><span>60 segundos. Los errores no frenan el reloj, solo no suman.</span></div>
+      <div class="modecard" data-mode="daily"><b>📅 Desafío diario</b><span>La misma secuencia para todos hoy. Comparen rachas.</span></div>
+    </div>
+    <button class="linklike" id="btnHowTo">¿Cómo se juega?</button>
+  </div>
+</div>
+
+<div class="overlay" id="tutOverlay">
+  <div class="panel">
+    <h1>Cómo se juega</h1>
+    <div class="tutsteps">
+      <div class="tutstep"><span class="num">1</span><p>Vas a ver dos tarjetas. Decidí si el valor oculto de la derecha es más grande o más chico.<br><small>Un error termina la racha al toque.</small></p></div>
+      <div class="tutstep"><span class="num">2</span><p>Cada 7 aciertos aparece un Enfrentamiento Legendario. A medida que sumás aciertos, los números a comparar se vuelven más parecidos y engañosos.</p></div>
+      <div class="tutstep"><span class="num">3</span><p>Llegá a los 100 puntos de racha perfecta para completar el juego definitivamente.</p></div>
+    </div>
+    <button class="bigbtn" id="btnCloseTut">Entendido</button>
+  </div>
+</div>
+
+<div class="overlay" id="settingsOverlay">
+  <div class="panel">
+    <h1>Ajustes</h1>
+    <div class="settingsrow"><span>Sonido y música</span><div class="switch on" id="swSound"><div class="knob"></div></div></div>
+    <div class="settingsrow"><span>Reducir movimiento</span><div class="switch" id="swMotion"><div class="knob"></div></div></div>
+    <button class="bigbtn alt" id="btnCloseSettings" style="margin-top:20px;">Cerrar</button>
+  </div>
+</div>
+
+<div class="overlay" id="endOverlay">
+  <div class="panel">
+    <div class="endmoji" id="endEmoji">💀</div>
+    <h1 id="endTitle">¡Le erraste fiero!</h1>
+    <div class="scorerow" id="finalScore">0</div>
+    <div class="scorelabel" id="finalScoreLabel">Racha final</div>
+    <div class="lesson" id="lessonText">Cargando...</div>
+    <div class="statsgrid" id="statsGrid"></div>
+    <div class="achlist" id="achList"></div>
+    <div class="endbtns">
+      <button class="bigbtn alt" id="btnShare">📤 Compartir</button>
+      <button class="bigbtn" id="btnRestart">Jugar de nuevo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursorRing');
+document.addEventListener('mousemove', e => {
+  cursor.style.transform = `translate(${e.clientX - 6}px, ${e.clientY - 6}px)`;
+  cursorRing.style.transform = `translate(${e.clientX - 18}px, ${e.clientY - 18}px)`;
+});
+
+const DB = [
+  {id:1, texto:"Veces que parpadea una persona por día", valor_real:19200, valor_mostrar:"19,2 mil", categoria:"Cuerpo Humano", icono:"👁️"},
+  {id:2, texto:"Gente que entra en la Bombonera", valor_real:54000, valor_mostrar:"54 mil", categoria:"Mundo Real", icono:"🏟️"},
+  {id:3, texto:"Pelos en la cabeza de una persona promedio", valor_real:120000, valor_mostrar:"120 mil", categoria:"Cuerpo Humano", icono:"🧑"},
+  {id:4, texto:"Idiomas vivos en el mundo", valor_real:7164, valor_mostrar:"7.164", categoria:"Lenguaje", icono:"🗣️"},
+  {id:5, texto:"Palabras en el diccionario de la RAE", valor_real:93111, valor_mostrar:"93 mil", categoria:"Lenguaje", icono:"📖"},
+  {id:6, texto:"Pasos que camina una persona en un año", valor_real:2500000, valor_mostrar:"2,5 millones", categoria:"Cuerpo Humano", icono:"🚶"},
+  {id:7, texto:"Colores posibles en formato RGB", valor_real:16777216, valor_mostrar:"16,7 millones", categoria:"Tecnología", icono:"🎨"},
+  {id:8, texto:"Segundos que hay en un año", valor_real:31536000, valor_mostrar:"31,5 millones", categoria:"Tiempo", icono:"⏱️"},
+  {id:9, texto:"Latidos del corazón humano en un año", valor_real:36792000, valor_mostrar:"36,8 millones", categoria:"Cuerpo Humano", icono:"❤️"},
+  {id:10, texto:"Habitantes de Argentina", valor_real:46000000, valor_mostrar:"46 millones", categoria:"Mundo Real", icono:"🇦🇷"},
+  {id:11, texto:"Libros publicados en toda la historia", valor_real:130000000, valor_mostrar:"130 millones", categoria:"Cultura", icono:"📚"},
+  {id:12, texto:"Población mundial actual", valor_real:8100000000, valor_mostrar:"8.100 millones", categoria:"Mundo Real", icono:"🌍"},
+  {id:13, texto:"Neuronas en el cerebro humano", valor_real:86000000000, valor_mostrar:"86 mil millones", categoria:"Cuerpo Humano", icono:"🧠"},
+  {id:14, texto:"Hojas de árboles en la Tierra", valor_real:3000000000000, valor_mostrar:"3 billones (3×10¹²)", categoria:"Naturaleza", icono:"🍃"},
+  {id:15, texto:"Células en el cuerpo humano", valor_real:37200000000000, valor_mostrar:"37,2 billones (3,7×10¹³)", categoria:"Cuerpo Humano", icono:"🔬"},
+  {id:16, texto:"Granos de arena en todas las playas", valor_real:7.5e18, valor_mostrar:"7,5 trillones (7,5×10¹⁸)", categoria:"Naturaleza", icono:"🏖️"},
+  {id:17, texto:"Insectos vivos en este momento", valor_real:1.0e19, valor_mostrar:"10 trillones (1×10¹⁹)", categoria:"Naturaleza", icono:"🐜"},
+  {id:18, texto:"Átomos en un grano de arena", valor_real:2.4e19, valor_mostrar:"24 trillones (2,4×10¹⁹)", categoria:"Ciencia", icono:"⏳"},
+  {id:19, texto:"Estrellas en el universo observable", valor_real:1.0e24, valor_mostrar:"1 cuatrillón (1×10²⁴)", categoria:"Astronomía", icono:"✨"},
+  {id:20, texto:"Combinaciones posibles del Cubo de Rubik 3×3", valor_real:4.325e19, valor_mostrar:"43 trillones (4,3×10¹⁹)", categoria:"Combinatoria", icono:"🧩", boss:true},
+  {id:21, texto:"Combinaciones de una contraseña de 10 caracteres", valor_real:6.0e19, valor_mostrar:"≈6×10¹⁹", categoria:"Tecnología", icono:"🔐"},
+  {id:22, texto:"Átomos en una gota de agua", valor_real:1.67e21, valor_mostrar:"1,67×10²¹", categoria:"Ciencia", icono:"💧"},
+  {id:23, texto:"Gotas de agua en todos los océanos", valor_real:2.7e25, valor_mostrar:"27 cuatrillones (2,7×10²⁵)", categoria:"Naturaleza", icono:"🌊"},
+  {id:24, texto:"Combinaciones posibles del Cubo de Rubik 4×4", valor_real:7.4e45, valor_mostrar:"7,4×10⁴⁵", categoria:"Combinatoria", icono:"🧊", boss:true},
+  {id:25, texto:"Átomos en el cuerpo humano", valor_real:7e27, valor_mostrar:"7×10²⁷", categoria:"Ciencia", icono:"🦴"},
+  {id:26, texto:"Formas de mezclar un mazo de 52 cartas", valor_real:8.06e67, valor_mostrar:"8,06×10⁶⁷", categoria:"Combinatoria", icono:"🃏", boss:true},
+  {id:27, texto:"Átomos en todo el universo observable", valor_real:1.0e80, valor_mostrar:"1×10⁸⁰", categoria:"Astronomía", icono:"🌌", boss:true},
+  {id:28, texto:"Partidas de ajedrez posibles", valor_real:1.0e120, valor_mostrar:"1×10¹²⁰", categoria:"Combinatoria", icono:"♟️", boss:true},
+  {id:29, texto:"Partidas posibles de Go", valor_real:2.1e170, valor_mostrar:"2,1×10¹⁷⁰", categoria:"Combinatoria", icono:"⚫", boss:true},
+  {id:30, texto:"Días en un siglo", valor_real:36524, valor_mostrar:"36,5 mil", categoria:"Tiempo", icono:"📅"},
+  {id:31, texto:"Horas en una vida de 80 años", valor_real:700800, valor_mostrar:"700 mil", categoria:"Tiempo", icono:"⏳"},
+  {id:32, texto:"Huesos en el cuerpo humano", valor_real:206, valor_mostrar:"206", categoria:"Cuerpo Humano", icono:"🦴"},
+  {id:33, texto:"Músculos en el cuerpo humano", valor_real:600, valor_mostrar:"600", categoria:"Cuerpo Humano", icono:"💪"},
+  {id:34, texto:"Latidos en un día promedio", valor_real:100000, valor_mostrar:"100 mil", categoria:"Cuerpo Humano", icono:"❤️"},
+  {id:35, texto:"Glóbulos rojos por gota de sangre", valor_real:5000000, valor_mostrar:"5 millones", categoria:"Cuerpo Humano", icono:"🩸"},
+  {id:36, texto:"Dólares en el patrimonio de Bill Gates", valor_real:130000000000, valor_mostrar:"130 mil millones", categoria:"Mundo Real", icono:"💵"},
+  {id:37, texto:"Edad de la Tierra en años", valor_real:4500000000, valor_mostrar:"4.500 millones", categoria:"Ciencia", icono:"🌍"},
+  {id:38, texto:"Edad del universo en años", valor_real:13800000000, valor_mostrar:"13.800 millones", categoria:"Astronomía", icono:"🌌"},
+  {id:39, texto:"Kilómetros a la luna", valor_real:384400, valor_mostrar:"384 mil", categoria:"Astronomía", icono:"🌕"},
+  {id:40, texto:"Kilómetros al sol", valor_real:149600000, valor_mostrar:"149 millones", categoria:"Astronomía", icono:"☀️"},
+  {id:41, texto:"Habitantes de China", valor_real:1412000000, valor_mostrar:"1.412 millones", categoria:"Mundo Real", icono:"🇨🇳"},
+  {id:42, texto:"Habitantes de India", valor_real:1428000000, valor_mostrar:"1.428 millones", categoria:"Mundo Real", icono:"🇮🇳"},
+  {id:43, texto:"Copias vendidas de Tetris", valor_real:520000000, valor_mostrar:"520 millones", categoria:"Cultura", icono:"🕹️"},
+  {id:44, texto:"Copias vendidas de GTA V", valor_real:190000000, valor_mostrar:"190 millones", categoria:"Cultura", icono:"🚗"},
+  {id:45, texto:"Jugadores de Roblox mensuales", valor_real:250000000, valor_mostrar:"250 millones", categoria:"Tecnología", icono:"🎮"},
+  {id:46, texto:"Cuentas de Minecraft creadas", valor_real:600000000, valor_mostrar:"600 millones", categoria:"Tecnología", icono:"⛏️"},
+  {id:47, texto:"Píxeles en una pantalla 4K", valor_real:8294400, valor_mostrar:"8,2 millones", categoria:"Tecnología", icono:"📺"},
+  {id:48, texto:"Píxeles en una pantalla 8K", valor_real:33177600, valor_mostrar:"33,1 millones", categoria:"Tecnología", icono:"🖥️"},
+  {id:49, texto:"Estrellas en la Vía Láctea", valor_real:300000000000, valor_mostrar:"300 mil millones", categoria:"Astronomía", icono:"🌌"},
+  {id:50, texto:"Galaxias en el universo observable", valor_real:200000000000, valor_mostrar:"200 mil millones", categoria:"Astronomía", icono:"🔭"},
+  {id:51, texto:"Bacterias en la Tierra", valor_real:5e30, valor_mostrar:"5×10³⁰", categoria:"Naturaleza", icono:"🦠", boss:true},
+  {id:52, texto:"Virus en el océano", valor_real:1e31, valor_mostrar:"1×10³¹", categoria:"Naturaleza", icono:"🌊", boss:true},
+  {id:53, texto:"Gotas de sangre en el cuerpo humano", valor_real:100000, valor_mostrar:"100 mil", categoria:"Cuerpo Humano", icono:"🩸"},
+  {id:54, texto:"Cabellos en un perro promedio", valor_real:15000000, valor_mostrar:"15 millones", categoria:"Naturaleza", icono:"🐕"},
+  {id:55, texto:"Litros de agua en los océanos", valor_real:1.33e21, valor_mostrar:"1,33×10²¹", categoria:"Naturaleza", icono:"🌊"},
+  {id:56, texto:"Kilos de masa de la Tierra", valor_real:5.97e24, valor_mostrar:"5,97×10²⁴", categoria:"Ciencia", icono:"🌍"},
+  {id:57, texto:"Kilos de masa del Sol", valor_real:1.98e30, valor_mostrar:"1,98×10³⁰", categoria:"Astronomía", icono:"☀️", boss:true},
+  {id:58, texto:"Distancia a Andrómeda en kilómetros", valor_real:2.4e19, valor_mostrar:"2,4×10¹⁹", categoria:"Astronomía", icono:"🌠"},
+  {id:59, texto:"Un año luz en kilómetros", valor_real:9.46e12, valor_mostrar:"9,46 billones (9,4×10¹²)", categoria:"Astronomía", icono:"🚀"},
+  {id:60, texto:"Átomos en la Tierra", valor_real:1.33e50, valor_mostrar:"1,33×10⁵⁰", categoria:"Ciencia", icono:"🌍", boss:true},
+  {id:61, texto:"Átomos en el Sol", valor_real:1.19e57, valor_mostrar:"1,19×10⁵⁷", categoria:"Astronomía", icono:"☀️", boss:true},
+  {id:62, texto:"Posiciones legales en Damas", valor_real:5e20, valor_mostrar:"5×10²⁰", categoria:"Combinatoria", icono:"🔴", boss:true},
+  {id:63, texto:"Número de Avogadro", valor_real:6.022e23, valor_mostrar:"6,022×10²³", categoria:"Ciencia", icono:"🧪"},
+  {id:64, texto:"Constante de Planck inversa", valor_real:1.5e33, valor_mostrar:"1,5×10³³", categoria:"Ciencia", icono:"📏", boss:true},
+  {id:65, texto:"Jugadas posibles en Ta-Te-Ti", valor_real:255168, valor_mostrar:"255 mil", categoria:"Combinatoria", icono:"❌"},
+  {id:66, texto:"Combinaciones del Quini 6", valor_real:9328511, valor_mostrar:"9,3 millones", categoria:"Mundo Real", icono:"🎰"},
+  {id:67, texto:"Números de teléfono de 10 dígitos posibles", valor_real:10000000000, valor_mostrar:"10 mil millones", categoria:"Tecnología", icono:"📱"},
+  {id:68, texto:"Direcciones IPv4 totales", valor_real:4294967296, valor_mostrar:"4.294 millones", categoria:"Tecnología", icono:"🌐"},
+  {id:69, texto:"Direcciones IPv6 posibles", valor_real:3.4e38, valor_mostrar:"3,4×10³⁸", categoria:"Tecnología", icono:"📡", boss:true},
+  {id:70, texto:"Contraseñas de 8 letras minúsculas", valor_real:208827064576, valor_mostrar:"208 mil millones", categoria:"Tecnología", icono:"🔑"},
+  {id:71, texto:"Combinaciones de un candado de 3 dígitos", valor_real:1000, valor_mostrar:"1.000", categoria:"Mundo Real", icono:"🔒"},
+  {id:72, texto:"Combinaciones de un candado de 4 dígitos", valor_real:10000, valor_mostrar:"10.000", categoria:"Mundo Real", icono:"🔐"},
+  {id:73, texto:"Sudokus válidos posibles", valor_real:6.67e21, valor_mostrar:"6,67×10²¹", categoria:"Combinatoria", icono:"🔢"},
+  {id:74, texto:"Formas de alinear 10 personas", valor_real:3628800, valor_mostrar:"3,6 millones", categoria:"Combinatoria", icono:"🧍"},
+  {id:75, texto:"Formas de alinear 20 personas", valor_real:2.4e18, valor_mostrar:"2,4 trillones (2,4×10¹⁸)", categoria:"Combinatoria", icono:"👥"},
+  {id:76, texto:"Segundos desde el Big Bang", valor_real:4.3e17, valor_mostrar:"4,3×10¹⁷", categoria:"Astronomía", icono:"💥"},
+  {id:77, texto:"Letras en Wikipedia en inglés", valor_real:40000000000, valor_mostrar:"40 mil millones", categoria:"Cultura", icono:"🌐"},
+  {id:78, texto:"Visualizaciones de Baby Shark en YouTube", valor_real:14000000000, valor_mostrar:"14 mil millones", categoria:"Cultura", icono:"🦈"},
+  {id:79, texto:"Dólares totales impresos en el mundo", valor_real:8e13, valor_mostrar:"80 billones (8×10¹³)", categoria:"Mundo Real", icono:"💸"},
+  {id:80, texto:"Kilobytes creados en el mundo por día", valor_real:2.5e15, valor_mostrar:"2,5 mil billones", categoria:"Tecnología", icono:"💾"},
+  {id:81, texto:"Pulsaciones de teclado globales por día", valor_real:1e13, valor_mostrar:"10 billones (1×10¹³)", categoria:"Tecnología", icono:"⌨️"},
+  {id:82, texto:"Búsquedas de Google en un año", valor_real:2e12, valor_mostrar:"2 billones (2×10¹²)", categoria:"Tecnología", icono:"🔍"},
+  {id:83, texto:"Votos en las elecciones de India", valor_real:600000000, valor_mostrar:"600 millones", categoria:"Mundo Real", icono:"🗳️"},
+  {id:84, texto:"Usuarios de celulares en el mundo", valor_real:7000000000, valor_mostrar:"7.000 millones", categoria:"Tecnología", icono:"📱"},
+  {id:85, texto:"Kilos de plástico en el océano", valor_real:1.5e11, valor_mostrar:"150 mil millones", categoria:"Naturaleza", icono:"🥤"},
+  {id:86, texto:"Árboles talados por año en el mundo", valor_real:15000000000, valor_mostrar:"15 mil millones", categoria:"Naturaleza", icono:"🪓"},
+  {id:87, texto:"Rayos que caen a la Tierra por año", valor_real:1400000000, valor_mostrar:"1.400 millones", categoria:"Naturaleza", icono:"🌩️"},
+  {id:88, texto:"Peces en el océano", valor_real:3.5e12, valor_mostrar:"3,5 billones (3,5×10¹²)", categoria:"Naturaleza", icono:"🐟"},
+  {id:89, texto:"Aves de corral vivas", valor_real:33000000000, valor_mostrar:"33 mil millones", categoria:"Naturaleza", icono:"🐔"},
+  {id:90, texto:"Vacas en el mundo", valor_real:1500000000, valor_mostrar:"1.500 millones", categoria:"Naturaleza", icono:"🐄"},
+  {id:91, texto:"Monedas de un centavo acuñadas históricamente", valor_real:3e11, valor_mostrar:"300 mil millones", categoria:"Mundo Real", icono:"🪙"},
+  {id:92, texto:"Fotones emitidos por un foco en un segundo", valor_real:3e20, valor_mostrar:"3×10²⁰", categoria:"Ciencia", icono:"💡"},
+  {id:93, texto:"Moléculas en un respiro de aire", valor_real:2.5e22, valor_mostrar:"2,5×10²²", categoria:"Ciencia", icono:"💨"},
+  {id:94, texto:"Kilos de hielo en la Antártida", valor_real:2.4e19, valor_mostrar:"2,4×10¹⁹", categoria:"Naturaleza", icono:"🧊"},
+  {id:95, texto:"Puntos de XP para el nivel máximo en Runescape", valor_real:200000000, valor_mostrar:"200 millones", categoria:"Cultura", icono:"⚔️"},
+  {id:96, texto:"Bloques en un mundo generado de Minecraft", valor_real:9.2e17, valor_mostrar:"9,2×10¹⁷", categoria:"Tecnología", icono:"🧊"},
+  {id:97, texto:"Combinaciones de un PIN de 6 dígitos", valor_real:1000000, valor_mostrar:"1 millón", categoria:"Mundo Real", icono:"🔢"},
+  {id:98, texto:"Un Gúgol (1 seguido de 100 ceros)", valor_real:1e100, valor_mostrar:"1×10¹⁰⁰", categoria:"Combinatoria", icono:"♾️", boss:true},
+  {id:99, texto:"Combinaciones del Cubo de Rubik 5x5", valor_real:2.8e74, valor_mostrar:"2,8×10⁷⁴", categoria:"Combinatoria", icono:"🧩", boss:true},
+  {id:100, texto:"Contraseñas posibles de 20 caracteres", valor_real:3.5e39, valor_mostrar:"3,5×10³⁹", categoria:"Tecnología", icono:"🔐", boss:true},
+  {id:101, texto:"Partículas subatómicas en el universo observable", valor_real:3e80, valor_mostrar:"3×10⁸⁰", categoria:"Astronomía", icono:"⚛️", boss:true},
+  {id:102, texto:"Respiraciones de una persona por día", valor_real:20000, valor_mostrar:"20 mil", categoria:"Cuerpo Humano", icono:"🫁"},
+  {id:103, texto:"Respiraciones en toda una vida", valor_real:600000000, valor_mostrar:"600 millones", categoria:"Cuerpo Humano", icono:"🌬️"},
+  {id:104, texto:"Litros de sangre bombeados por día", valor_real:7000, valor_mostrar:"7.000", categoria:"Cuerpo Humano", icono:"🩸"},
+  {id:105, texto:"Papilas gustativas en la lengua", valor_real:10000, valor_mostrar:"10 mil", categoria:"Cuerpo Humano", icono:"👅"},
+  {id:106, texto:"Poros en la piel humana", valor_real:5000000, valor_mostrar:"5 millones", categoria:"Cuerpo Humano", icono:"👤"},
+  {id:107, texto:"Células muertas de piel perdidas por día", valor_real:500000000, valor_mostrar:"500 millones", categoria:"Cuerpo Humano", icono:"🧫"},
+  {id:108, texto:"Pelos en una ceja humana", valor_real:500, valor_mostrar:"500", categoria:"Cuerpo Humano", icono:"🤨"},
+  {id:109, texto:"Pestañas en un solo ojo", valor_real:150, valor_mostrar:"150", categoria:"Cuerpo Humano", icono:"👁️"},
+  {id:110, texto:"Músculos necesarios para sonreír", valor_real:17, valor_mostrar:"17", categoria:"Cuerpo Humano", icono:"😊"},
+  {id:111, texto:"Músculos necesarios para fruncir el ceño", valor_real:43, valor_mostrar:"43", categoria:"Cuerpo Humano", icono:"😠"},
+  {id:112, texto:"Calorías quemadas en un día promedio", valor_real:2000, valor_mostrar:"2.000", categoria:"Cuerpo Humano", icono:"🔥"},
+  {id:113, texto:"Pasos diarios recomendados", valor_real:10000, valor_mostrar:"10 mil", categoria:"Cuerpo Humano", icono:"👟"},
+  {id:114, texto:"Sueños que tenemos por noche", valor_real:5, valor_mostrar:"5", categoria:"Cuerpo Humano", icono:"💤"},
+  {id:115, texto:"Horas dormidas en una vida promedio", valor_real:233600, valor_mostrar:"233 mil", categoria:"Tiempo", icono:"🛏️"},
+  {id:116, texto:"Litros de saliva producidos en la vida", valor_real:23600, valor_mostrar:"23,6 mil", categoria:"Cuerpo Humano", icono:"🤤"},
+  {id:117, texto:"Latidos por minuto de un bebé", valor_real:140, valor_mostrar:"140", categoria:"Cuerpo Humano", icono:"👶"},
+  {id:118, texto:"Óvulos en una mujer al nacer", valor_real:1000000, valor_mostrar:"1 millón", categoria:"Cuerpo Humano", icono:"🥚"},
+  {id:119, texto:"Espermatozoides por eyaculación promedio", valor_real:300000000, valor_mostrar:"300 millones", categoria:"Cuerpo Humano", icono:"🧬"},
+  {id:120, texto:"Glóbulos blancos en una gota de sangre", valor_real:10000, valor_mostrar:"10 mil", categoria:"Cuerpo Humano", icono:"🦠"},
+  {id:121, texto:"Huesos en el cuerpo de un bebé", valor_real:300, valor_mostrar:"300", categoria:"Cuerpo Humano", icono:"🦴"},
+  {id:122, texto:"Articulaciones en el cuerpo humano", valor_real:360, valor_mostrar:"360", categoria:"Cuerpo Humano", icono:"🦾"},
+  {id:123, texto:"Dientes en un adulto", valor_real:32, valor_mostrar:"32", categoria:"Cuerpo Humano", icono:"🦷"},
+  {id:124, texto:"Dientes de leche en un niño", valor_real:20, valor_mostrar:"20", categoria:"Cuerpo Humano", icono:"🧒"},
+  {id:125, texto:"Longitud del intestino delgado en cm", valor_real:700, valor_mostrar:"700", categoria:"Cuerpo Humano", icono:"📏"},
+  {id:126, texto:"Longitud del intestino grueso en cm", valor_real:150, valor_mostrar:"150", categoria:"Cuerpo Humano", icono:"📏"},
+  {id:127, texto:"Longitud de todos los vasos sanguíneos en km", valor_real:100000, valor_mostrar:"100 mil", categoria:"Cuerpo Humano", icono:"🩸"},
+  {id:128, texto:"Neuronas en la médula espinal", valor_real:1000000000, valor_mostrar:"1.000 millones", categoria:"Cuerpo Humano", icono:"⚡"},
+  {id:129, texto:"Receptores olfativos en la nariz", valor_real:400000000, valor_mostrar:"400 millones", categoria:"Cuerpo Humano", icono:"👃"},
+  {id:130, texto:"Glándulas sudoríparas en la piel", valor_real:3000000000, valor_mostrar:"3.000 millones", categoria:"Cuerpo Humano", icono:"💧"},
+  {id:131, texto:"Días que el humano puede vivir sin agua", valor_real:4, valor_mostrar:"4", categoria:"Cuerpo Humano", icono:"🚰"},
+  {id:132, texto:"Días que el humano puede vivir sin comida", valor_real:30, valor_mostrar:"30", categoria:"Cuerpo Humano", icono:"🍽️"},
+  {id:133, texto:"Uñas cortadas en una vida promedio", valor_real:2000, valor_mostrar:"2.000", categoria:"Cuerpo Humano", icono:"💅"},
+  {id:134, texto:"Litros de lágrimas en la vida", valor_real:65, valor_mostrar:"65", categoria:"Cuerpo Humano", icono:"😢"},
+  {id:135, texto:"Milisegundos que dura un parpadeo", valor_real:300, valor_mostrar:"300", categoria:"Cuerpo Humano", icono:"👁️"},
+  {id:136, texto:"Velocidad de un estornudo en km/h", valor_real:160, valor_mostrar:"160", categoria:"Cuerpo Humano", icono:"🤧"},
+  {id:137, texto:"Velocidad de la tos en km/h", valor_real:80, valor_mostrar:"80", categoria:"Cuerpo Humano", icono:"😷"},
+  {id:138, texto:"Velocidad de impulsos nerviosos en km/h", valor_real:400, valor_mostrar:"400", categoria:"Cuerpo Humano", icono:"⚡"},
+  {id:139, texto:"Folículos pilosos en todo el cuerpo", valor_real:5000000, valor_mostrar:"5 millones", categoria:"Cuerpo Humano", icono:"🧑"},
+  {id:140, texto:"Capacidad máxima del estómago en ml", valor_real:1000, valor_mostrar:"1.000", categoria:"Cuerpo Humano", icono:"🍲"},
+  {id:141, texto:"Alvéolos en los pulmones humanos", valor_real:600000000, valor_mostrar:"600 millones", categoria:"Cuerpo Humano", icono:"🫁"},
+  {id:142, texto:"Lóbulos en el cerebro humano", valor_real:4, valor_mostrar:"4", categoria:"Cuerpo Humano", icono:"🧠"},
+  {id:143, texto:"Cromosomas en una célula humana", valor_real:46, valor_mostrar:"46", categoria:"Ciencia", icono:"🧬"},
+  {id:144, texto:"Pares de bases de ADN humano", valor_real:3000000000, valor_mostrar:"3.000 millones", categoria:"Ciencia", icono:"🧬"},
+  {id:145, texto:"Genes en el genoma humano", valor_real:20000, valor_mostrar:"20 mil", categoria:"Ciencia", icono:"🔬"},
+  {id:146, texto:"Latidos de un colibrí por minuto", valor_real:1200, valor_mostrar:"1.200", categoria:"Naturaleza", icono:"🐦"},
+  {id:147, texto:"Latidos de una ballena azul por minuto", valor_real:8, valor_mostrar:"8", categoria:"Naturaleza", icono:"🐋"},
+  {id:148, texto:"Lentes en el ojo de una mosca", valor_real:4000, valor_mostrar:"4.000", categoria:"Naturaleza", icono:"🪰"},
+  {id:149, texto:"Dientes activos de un tiburón blanco", valor_real:300, valor_mostrar:"300", categoria:"Naturaleza", icono:"🦈"},
+  {id:150, texto:"Dientes microscópicos de un caracol", valor_real:14000, valor_mostrar:"14 mil", categoria:"Naturaleza", icono:"🐌"},
+  {id:151, texto:"Especies de animales conocidas", valor_real:1500000, valor_mostrar:"1,5 millones", categoria:"Naturaleza", icono:"🐾"},
+  {id:152, texto:"Especies de plantas conocidas", valor_real:390000, valor_mostrar:"390 mil", categoria:"Naturaleza", icono:"🌿"},
+  {id:153, texto:"Especies de hongos descritas", valor_real:100000, valor_mostrar:"100 mil", categoria:"Naturaleza", icono:"🍄"},
+  {id:154, texto:"Hormigas por cada ser humano", valor_real:2500000, valor_mostrar:"2,5 millones", categoria:"Naturaleza", icono:"🐜"},
+  {id:155, texto:"Huevos que pone una abeja reina por día", valor_real:2000, valor_mostrar:"2.000", categoria:"Naturaleza", icono:"🐝"},
+  {id:156, texto:"Flores visitadas para 1kg de miel", valor_real:4000000, valor_mostrar:"4 millones", categoria:"Naturaleza", icono:"🍯"},
+  {id:157, texto:"Aleteos de una abeja por segundo", valor_real:200, valor_mostrar:"200", categoria:"Naturaleza", icono:"🐝"},
+  {id:158, texto:"Kilos de basura por persona al año", valor_real:300, valor_mostrar:"300", categoria:"Mundo Real", icono:"🗑️"},
+  {id:159, texto:"Montañas mayores a 8000 metros", valor_real:14, valor_mostrar:"14", categoria:"Mundo Real", icono:"⛰️"},
+  {id:160, texto:"Volcanes activos en la Tierra", valor_real:1500, valor_mostrar:"1.500", categoria:"Naturaleza", icono:"🌋"},
+  {id:161, texto:"Terremotos detectados al año", valor_real:500000, valor_mostrar:"500 mil", categoria:"Naturaleza", icono:"💥"},
+  {id:162, texto:"Litros de agua en una nube cúmulo", valor_real:500000, valor_mostrar:"500 mil", categoria:"Naturaleza", icono:"☁️"},
+  {id:163, texto:"Gotas estimadas en 1 litro de agua", valor_real:20000, valor_mostrar:"20 mil", categoria:"Ciencia", icono:"💧"},
+  {id:164, texto:"Árboles en la selva del Amazonas", valor_real:390000000000, valor_mostrar:"390 mil millones", categoria:"Naturaleza", icono:"🌳"},
+  {id:165, texto:"Kilómetros del río Amazonas", valor_real:6992, valor_mostrar:"6.992", categoria:"Naturaleza", icono:"🏞️"},
+  {id:166, texto:"Kilómetros del río Nilo", valor_real:6650, valor_mostrar:"6.650", categoria:"Naturaleza", icono:"🌊"},
+  {id:167, texto:"Profundidad del océano en metros", valor_real:10935, valor_mostrar:"10.935", categoria:"Naturaleza", icono:"⚓"},
+  {id:168, texto:"Altura del Monte Everest en metros", valor_real:8848, valor_mostrar:"8.848", categoria:"Mundo Real", icono:"🏔️"},
+  {id:169, texto:"Islas en todo el mundo", valor_real:900000, valor_mostrar:"900 mil", categoria:"Naturaleza", icono:"🏝️"},
+  {id:170, texto:"Islas en Indonesia", valor_real:17508, valor_mostrar:"17.508", categoria:"Mundo Real", icono:"🇮🇩"},
+  {id:171, texto:"Lagos en Canadá", valor_real:2000000, valor_mostrar:"2 millones", categoria:"Naturaleza", icono:"🇨🇦"},
+  {id:172, texto:"Océanos en el mundo", valor_real:5, valor_mostrar:"5", categoria:"Naturaleza", icono:"🌊"},
+  {id:173, texto:"Continentes de la Tierra", valor_real:7, valor_mostrar:"7", categoria:"Mundo Real", icono:"🗺️"},
+  {id:174, texto:"Países reconocidos en el mundo", valor_real:195, valor_mostrar:"195", categoria:"Mundo Real", icono:"🏳️"},
+  {id:175, texto:"Ciudades en el mundo (aprox)", valor_real:10000, valor_mostrar:"10 mil", categoria:"Mundo Real", icono:"🏙️"},
+  {id:176, texto:"Idiomas en Papúa Nueva Guinea", valor_real:840, valor_mostrar:"840", categoria:"Lenguaje", icono:"🇵🇬"},
+  {id:177, texto:"Huracanes al año en promedio", valor_real:85, valor_mostrar:"85", categoria:"Naturaleza", icono:"🌀"},
+  {id:178, texto:"Tornados al año en EE.UU.", valor_real:1200, valor_mostrar:"1.200", categoria:"Naturaleza", icono:"🌪️"},
+  {id:179, texto:"Meteoritos que caen a la Tierra al día", valor_real:17, valor_mostrar:"17", categoria:"Astronomía", icono:"☄️"},
+  {id:180, texto:"Toneladas de polvo cósmico por día", valor_real:60, valor_mostrar:"60", categoria:"Astronomía", icono:"✨"},
+  {id:181, texto:"Edad de la Luna en años", valor_real:4500000000, valor_mostrar:"4.500 millones", categoria:"Astronomía", icono:"🌕"},
+  {id:182, texto:"Aves vivas en el mundo", valor_real:50000000000, valor_mostrar:"50 mil millones", categoria:"Naturaleza", icono:"🦅"},
+  {id:183, texto:"Perros en el mundo", valor_real:900000000, valor_mostrar:"900 millones", categoria:"Mundo Real", icono:"🐕"},
+  {id:184, texto:"Gatos en el mundo", valor_real:600000000, valor_mostrar:"600 millones", categoria:"Mundo Real", icono:"🐈"},
+  {id:185, texto:"Cerdos en el mundo", valor_real:1000000000, valor_mostrar:"1.000 millones", categoria:"Naturaleza", icono:"🐖"},
+  {id:186, texto:"Ovejas en el mundo", valor_real:1000000000, valor_mostrar:"1.000 millones", categoria:"Naturaleza", icono:"🐑"},
+  {id:187, texto:"Caballos en el mundo", valor_real:60000000, valor_mostrar:"60 millones", categoria:"Naturaleza", icono:"🐎"},
+  {id:188, texto:"Pingüinos en la Antártida", valor_real:20000000, valor_mostrar:"20 millones", categoria:"Naturaleza", icono:"🐧"},
+  {id:189, texto:"Osos polares vivos", valor_real:26000, valor_mostrar:"26 mil", categoria:"Naturaleza", icono:"🐻‍❄️"},
+  {id:190, texto:"Tigres en libertad", valor_real:3900, valor_mostrar:"3.900", categoria:"Naturaleza", icono:"🐅"},
+  {id:191, texto:"Rinocerontes blancos vivos", valor_real:18000, valor_mostrar:"18 mil", categoria:"Naturaleza", icono:"🦏"},
+  {id:192, texto:"Elefantes africanos", valor_real:415000, valor_mostrar:"415 mil", categoria:"Naturaleza", icono:"🐘"},
+  {id:193, texto:"Leones en libertad", valor_real:20000, valor_mostrar:"20 mil", categoria:"Naturaleza", icono:"🦁"},
+  {id:194, texto:"Gorilas de montaña", valor_real:1000, valor_mostrar:"1.000", categoria:"Naturaleza", icono:"🦍"},
+  {id:195, texto:"Ballenas azules vivas", valor_real:15000, valor_mostrar:"15 mil", categoria:"Naturaleza", icono:"🐋"},
+  {id:196, texto:"Arañas por m² en un campo verde", valor_real:130, valor_mostrar:"130", categoria:"Naturaleza", icono:"🕷️"},
+  {id:197, texto:"Huevos de una mosca en su vida", valor_real:500, valor_mostrar:"500", categoria:"Naturaleza", icono:"🪰"},
+  {id:198, texto:"Saltos de una pulga sin parar", valor_real:30000, valor_mostrar:"30 mil", categoria:"Naturaleza", icono:"🦗"},
+  {id:199, texto:"Mosquitos en el mundo", valor_real:1.1e14, valor_mostrar:"110 billones (1,1×10¹⁴)", categoria:"Naturaleza", icono:"🦟"},
+  {id:200, texto:"Especies de insectos descubiertas", valor_real:1000000, valor_mostrar:"1 millón", categoria:"Naturaleza", icono:"🐞"},
+  {id:201, texto:"Planetas en el sistema solar", valor_real:8, valor_mostrar:"8", categoria:"Astronomía", icono:"🪐"},
+  {id:202, texto:"Lunas de Júpiter", valor_real:95, valor_mostrar:"95", categoria:"Astronomía", icono:"🌙"},
+  {id:203, texto:"Lunas de Saturno", valor_real:146, valor_mostrar:"146", categoria:"Astronomía", icono:"🌕"},
+  {id:204, texto:"Días para dar la vuelta al Sol (Tierra)", valor_real:365, valor_mostrar:"365", categoria:"Astronomía", icono:"🌍"},
+  {id:205, texto:"Días para dar la vuelta al Sol (Marte)", valor_real:687, valor_mostrar:"687", categoria:"Astronomía", icono:"🔴"},
+  {id:206, texto:"Años para dar la vuelta al Sol (Plutón)", valor_real:248, valor_mostrar:"248", categoria:"Astronomía", icono:"🌑"},
+  {id:207, texto:"Velocidad de la luz en km/s", valor_real:299792, valor_mostrar:"299 mil", categoria:"Ciencia", icono:"⚡"},
+  {id:208, texto:"Velocidad del sonido en m/s", valor_real:343, valor_mostrar:"343", categoria:"Ciencia", icono:"🔊"},
+  {id:209, texto:"Temperatura en el núcleo del Sol (°C)", valor_real:15000000, valor_mostrar:"15 millones", categoria:"Astronomía", icono:"🔥"},
+  {id:210, texto:"Temperatura en la superficie del Sol (°C)", valor_real:5500, valor_mostrar:"5.500", categoria:"Astronomía", icono:"☀️"},
+  {id:211, texto:"Cero absoluto en °C", valor_real:-273, valor_mostrar:"-273", categoria:"Ciencia", icono:"❄️"},
+  {id:212, texto:"Minutos de la luz del Sol a la Tierra", valor_real:8, valor_mostrar:"8", categoria:"Astronomía", icono:"⏱️"},
+  {id:213, texto:"Diámetro de la Tierra en km", valor_real:12742, valor_mostrar:"12.742", categoria:"Astronomía", icono:"🌍"},
+  {id:214, texto:"Diámetro de Júpiter en km", valor_real:139820, valor_mostrar:"139 mil", categoria:"Astronomía", icono:"🪐"},
+  {id:215, texto:"Diámetro del Sol en km", valor_real:1392700, valor_mostrar:"1,3 millones", categoria:"Astronomía", icono:"☀️"},
+  {id:216, texto:"Galaxias en el Grupo Local", valor_real:54, valor_mostrar:"54", categoria:"Astronomía", icono:"🌌"},
+  {id:217, texto:"Constelaciones reconocidas", valor_real:88, valor_mostrar:"88", categoria:"Astronomía", icono:"🌟"},
+  {id:218, texto:"Estrellas en el cinturón de Orión", valor_real:3, valor_mostrar:"3", categoria:"Astronomía", icono:"✨"},
+  {id:219, texto:"Exoplanetas descubiertos", valor_real:5500, valor_mostrar:"5.500", categoria:"Astronomía", icono:"🔭"},
+  {id:220, texto:"Años luz a Proxima Centauri", valor_real:4, valor_mostrar:"4", categoria:"Astronomía", icono:"🚀"},
+  {id:221, texto:"Kilómetros de la Tierra a Marte", valor_real:225000000, valor_mostrar:"225 millones", categoria:"Astronomía", icono:"🔴"},
+  {id:222, texto:"Satélites artificiales en órbita", valor_real:7500, valor_mostrar:"7.500", categoria:"Tecnología", icono:"🛰️"},
+  {id:223, texto:"Basura espacial mayor a 10cm", valor_real:34000, valor_mostrar:"34 mil", categoria:"Astronomía", icono:"🗑️"},
+  {id:224, texto:"Personas que han caminado en la Luna", valor_real:12, valor_mostrar:"12", categoria:"Mundo Real", icono:"👨‍🚀"},
+  {id:225, texto:"Personas que han ido al espacio", valor_real:600, valor_mostrar:"600", categoria:"Mundo Real", icono:"🚀"},
+  {id:226, texto:"Misiones Apolo", valor_real:17, valor_mostrar:"17", categoria:"Historia", icono:"🚀"},
+  {id:227, texto:"Días que duró la misión Apolo 11", valor_real:8, valor_mostrar:"8", categoria:"Historia", icono:"🌕"},
+  {id:228, texto:"Masa de Júpiter en kg", valor_real:1.898e27, valor_mostrar:"1,89×10²⁷", categoria:"Astronomía", icono:"🪐", boss:true},
+  {id:229, texto:"Masa de un electrón en kg", valor_real:9.1e-31, valor_mostrar:"9,1×10⁻³¹", categoria:"Ciencia", icono:"⚛️"},
+  {id:230, texto:"Masa de un protón en kg", valor_real:1.67e-27, valor_mostrar:"1,67×10⁻²⁷", categoria:"Ciencia", icono:"⚛️"},
+  {id:231, texto:"Constante de gravedad", valor_real:6.67e-11, valor_mostrar:"6,67×10⁻¹¹", categoria:"Ciencia", icono:"🍎"},
+  {id:232, texto:"Julios en un kilotón de TNT", valor_real:4.18e12, valor_mostrar:"4,18 billones", categoria:"Ciencia", icono:"💣"},
+  {id:233, texto:"Átomos de carbono en un diamante de 1g", valor_real:5e22, valor_mostrar:"5×10²²", categoria:"Ciencia", icono:"💎"},
+  {id:234, texto:"Nanómetros en un milímetro", valor_real:1000000, valor_mostrar:"1 millón", categoria:"Ciencia", icono:"📏"},
+  {id:235, texto:"Quarks en un protón", valor_real:3, valor_mostrar:"3", categoria:"Ciencia", icono:"⚛️"},
+  {id:236, texto:"Elementos en la tabla periódica", valor_real:118, valor_mostrar:"118", categoria:"Ciencia", icono:"🧪"},
+  {id:237, texto:"Metales en la tabla periódica", valor_real:91, valor_mostrar:"91", categoria:"Ciencia", icono:"🔩"},
+  {id:238, texto:"Gases nobles", valor_real:7, valor_mostrar:"7", categoria:"Ciencia", icono:"🎈"},
+  {id:239, texto:"Isótopos conocidos", valor_real:3300, valor_mostrar:"3.300", categoria:"Ciencia", icono:"🧫"},
+  {id:240, texto:"Semivida del Carbono-14 en años", valor_real:5730, valor_mostrar:"5.730", categoria:"Ciencia", icono:"⏳"},
+  {id:241, texto:"Semivida del Uranio-238 en años", valor_real:4500000000, valor_mostrar:"4.500 millones", categoria:"Ciencia", icono:"☢️"},
+  {id:242, texto:"Radiación cósmica de fondo en Kelvin", valor_real:2.7, valor_mostrar:"2,7", categoria:"Astronomía", icono:"📻"},
+  {id:243, texto:"Púlsares descubiertos", valor_real:3000, valor_mostrar:"3.000", categoria:"Astronomía", icono:"📡"},
+  {id:244, texto:"Agujeros negros en la Vía Láctea", valor_real:100000000, valor_mostrar:"100 millones", categoria:"Astronomía", icono:"🕳️"},
+  {id:245, texto:"Asteroides en el cinturón principal", valor_real:1900000, valor_mostrar:"1,9 millones", categoria:"Astronomía", icono:"🪨"},
+  {id:246, texto:"Cometas conocidos", valor_real:3800, valor_mostrar:"3.800", categoria:"Astronomía", icono:"☄️"},
+  {id:247, texto:"Densidad del agua en kg/m³", valor_real:1000, valor_mostrar:"1.000", categoria:"Ciencia", icono:"💧"},
+  {id:248, texto:"Densidad del oro en kg/m³", valor_real:19300, valor_mostrar:"19,3 mil", categoria:"Ciencia", icono:"🥇"},
+  {id:249, texto:"Densidad del plomo en kg/m³", valor_real:11340, valor_mostrar:"11,3 mil", categoria:"Ciencia", icono:"🧱"},
+  {id:250, texto:"Densidad del osmio en kg/m³", valor_real:22590, valor_mostrar:"22,5 mil", categoria:"Ciencia", icono:"🪨"},
+  {id:251, texto:"Cuentas de email activas", valor_real:4000000000, valor_mostrar:"4.000 millones", categoria:"Tecnología", icono:"📧"},
+  {id:252, texto:"Correos enviados por día", valor_real:330000000000, valor_mostrar:"330 mil millones", categoria:"Tecnología", icono:"📩"},
+  {id:253, texto:"Sitios web en el mundo", valor_real:1800000000, valor_mostrar:"1.800 millones", categoria:"Tecnología", icono:"🌐"},
+  {id:254, texto:"Dominios .com registrados", valor_real:160000000, valor_mostrar:"160 millones", categoria:"Tecnología", icono:"🔗"},
+  {id:255, texto:"Usuarios activos en Facebook", valor_real:3000000000, valor_mostrar:"3.000 millones", categoria:"Tecnología", icono:"👥"},
+  {id:256, texto:"Horas de video a YouTube por minuto", valor_real:500, valor_mostrar:"500", categoria:"Tecnología", icono:"▶️"},
+  {id:257, texto:"Tweets enviados por día", valor_real:500000000, valor_mostrar:"500 millones", categoria:"Tecnología", icono:"🐦"},
+  {id:258, texto:"Fotos subidas a Instagram por día", valor_real:95000000, valor_mostrar:"95 millones", categoria:"Tecnología", icono:"📸"},
+  {id:259, texto:"Mensajes de WhatsApp por día", valor_real:100000000000, valor_mostrar:"100 mil millones", categoria:"Tecnología", icono:"💬"},
+  {id:260, texto:"Aplicaciones en Google Play", valor_real:2500000, valor_mostrar:"2,5 millones", categoria:"Tecnología", icono:"🤖"},
+  {id:261, texto:"Aplicaciones en App Store", valor_real:1800000, valor_mostrar:"1,8 millones", categoria:"Tecnología", icono:"🍏"},
+  {id:262, texto:"Consultas a ChatGPT diarias", valor_real:100000000, valor_mostrar:"100 millones", categoria:"Tecnología", icono:"🧠"},
+  {id:263, texto:"Transistores en un chip Apple M3 Max", valor_real:92000000000, valor_mostrar:"92 mil millones", categoria:"Tecnología", icono:"💻"},
+  {id:264, texto:"Líneas de código en Linux", valor_real:30000000, valor_mostrar:"30 millones", categoria:"Tecnología", icono:"🐧"},
+  {id:265, texto:"Líneas de código en Google", valor_real:2000000000, valor_mostrar:"2.000 millones", categoria:"Tecnología", icono:"🔍"},
+  {id:266, texto:"Personajes en Super Smash Bros Ultimate", valor_real:89, valor_mostrar:"89", categoria:"Cultura", icono:"⚔️"},
+  {id:267, texto:"Pokémon existentes", valor_real:1025, valor_mostrar:"1.025", categoria:"Cultura", icono:"⚡"},
+  {id:268, texto:"Cartas de Magic The Gathering", valor_real:25000, valor_mostrar:"25 mil", categoria:"Cultura", icono:"🧙"},
+  {id:269, texto:"Fichas de Lego fabricadas", valor_real:400000000000, valor_mostrar:"400 mil millones", categoria:"Cultura", icono:"🧱"},
+  {id:270, texto:"Cubos de Rubik vendidos", valor_real:450000000, valor_mostrar:"450 millones", categoria:"Cultura", icono:"🧩"},
+  {id:271, texto:"Autos en el mundo", valor_real:1400000000, valor_mostrar:"1.400 millones", categoria:"Mundo Real", icono:"🚗"},
+  {id:272, texto:"Vuelos comerciales al día", valor_real:100000, valor_mostrar:"100 mil", categoria:"Mundo Real", icono:"✈️"},
+  {id:273, texto:"Pasajeros de avión al año", valor_real:4000000000, valor_mostrar:"4.000 millones", categoria:"Mundo Real", icono:"🛫"},
+  {id:274, texto:"Barcos de carga en el mundo", valor_real:50000, valor_mostrar:"50 mil", categoria:"Mundo Real", icono:"🚢"},
+  {id:275, texto:"Submarinos militares activos", valor_real:500, valor_mostrar:"500", categoria:"Mundo Real", icono:"🤿"},
+  {id:276, texto:"Satélites Starlink en órbita", valor_real:5000, valor_mostrar:"5.000", categoria:"Tecnología", icono:"📡"},
+  {id:277, texto:"Cables submarinos de internet", valor_real:500, valor_mostrar:"500", categoria:"Tecnología", icono:"🌊"},
+  {id:278, texto:"Longitud de cables submarinos en km", valor_real:1300000, valor_mostrar:"1,3 millones", categoria:"Tecnología", icono:"🌐"},
+  {id:279, texto:"Antenas de telefonía 5G", valor_real:3000000, valor_mostrar:"3 millones", categoria:"Tecnología", icono:"📶"},
+  {id:280, texto:"Ventas totales de iPhone", valor_real:2200000000, valor_mostrar:"2.200 millones", categoria:"Tecnología", icono:"📱"},
+  {id:281, texto:"Ventas de PlayStation 2", valor_real:155000000, valor_mostrar:"155 millones", categoria:"Cultura", icono:"🎮"},
+  {id:282, texto:"Ventas de Nintendo Switch", valor_real:139000000, valor_mostrar:"139 millones", categoria:"Cultura", icono:"🕹️"},
+  {id:283, texto:"Ventas de Minecraft", valor_real:300000000, valor_mostrar:"300 millones", categoria:"Cultura", icono:"⛏️"},
+  {id:284, texto:"Episodios de Los Simpson", valor_real:760, valor_mostrar:"760", categoria:"Cultura", icono:"🍩"},
+  {id:285, texto:"Episodios de One Piece", valor_real:1100, valor_mostrar:"1.100", categoria:"Cultura", icono:"🏴‍☠️"},
+  {id:286, texto:"Palabras en la saga de Harry Potter", valor_real:1000000, valor_mostrar:"1 millón", categoria:"Lenguaje", icono:"🪄"},
+  {id:287, texto:"Palabras en la Biblia", valor_real:783137, valor_mostrar:"783 mil", categoria:"Lenguaje", icono:"📖"},
+  {id:288, texto:"Palabras en Don Quijote", valor_real:381104, valor_mostrar:"381 mil", categoria:"Lenguaje", icono:"🏇"},
+  {id:289, texto:"Obras de William Shakespeare", valor_real:37, valor_mostrar:"37", categoria:"Cultura", icono:"🎭"},
+  {id:290, texto:"Pinturas de Van Gogh", valor_real:900, valor_mostrar:"900", categoria:"Cultura", icono:"🖼️"},
+  {id:291, texto:"Obras expuestas en el Louvre", valor_real:35000, valor_mostrar:"35 mil", categoria:"Cultura", icono:"🏛️"},
+  {id:292, texto:"Visitantes del Louvre al año", valor_real:8000000, valor_mostrar:"8 millones", categoria:"Cultura", icono:"🚶"},
+  {id:293, texto:"Estatuillas de los Oscar entregadas", valor_real:3140, valor_mostrar:"3.140", categoria:"Cultura", icono:"🏆"},
+  {id:294, texto:"Premios Nobel entregados", valor_real:1000, valor_mostrar:"1.000", categoria:"Cultura", icono:"🏅"},
+  {id:295, texto:"Récords Guinness vigentes", valor_real:40000, valor_mostrar:"40 mil", categoria:"Cultura", icono:"📖"},
+  {id:296, texto:"Juegos Olímpicos modernos celebrados", valor_real:29, valor_mostrar:"29", categoria:"Cultura", icono:"🥇"},
+  {id:297, texto:"Países participantes en los JJOO", valor_real:206, valor_mostrar:"206", categoria:"Mundo Real", icono:"🌍"},
+  {id:298, texto:"Jugadores de fútbol registrados en FIFA", valor_real:250000000, valor_mostrar:"250 millones", categoria:"Mundo Real", icono:"⚽"},
+  {id:299, texto:"Goles de Messi", valor_real:821, valor_mostrar:"821", categoria:"Cultura", icono:"🇦🇷"},
+  {id:300, texto:"Goles de Pelé", valor_real:1281, valor_mostrar:"1.281", categoria:"Cultura", icono:"🇧🇷"},
+  {id:301, texto:"Hamburguesas vendidas por McDonald's", valor_real:300000000000, valor_mostrar:"300 mil millones", categoria:"Mundo Real", icono:"🍔"},
+  {id:302, texto:"Restaurantes McDonald's en el mundo", valor_real:40000, valor_mostrar:"40 mil", categoria:"Mundo Real", icono:"🍟"},
+  {id:303, texto:"Locales de Starbucks", valor_real:38000, valor_mostrar:"38 mil", categoria:"Mundo Real", icono:"☕"},
+  {id:304, texto:"Tazas de café consumidas al día", valor_real:2250000000, valor_mostrar:"2.250 millones", categoria:"Mundo Real", icono:"☕"},
+  {id:305, texto:"Litros de cerveza consumidos al año", valor_real:200000000000, valor_mostrar:"200 mil millones", categoria:"Mundo Real", icono:"🍺"},
+  {id:306, texto:"Latas de Coca-Cola vendidas al día", valor_real:1900000000, valor_mostrar:"1.900 millones", categoria:"Mundo Real", icono:"🥤"},
+  {id:307, texto:"Cacao producido al año en toneladas", valor_real:5000000, valor_mostrar:"5 millones", categoria:"Mundo Real", icono:"🍫"},
+  {id:308, texto:"Plátanos comidos al año", valor_real:100000000000, valor_mostrar:"100 mil millones", categoria:"Mundo Real", icono:"🍌"},
+  {id:309, texto:"Pollos consumidos al año", valor_real:50000000000, valor_mostrar:"50 mil millones", categoria:"Mundo Real", icono:"🍗"},
+  {id:310, texto:"Huevos producidos al año", valor_real:1400000000000, valor_mostrar:"1,4 billones", categoria:"Mundo Real", icono:"🥚"},
+  {id:311, texto:"Litros de leche producidos al año", valor_real:900000000000, valor_mostrar:"900 mil millones", categoria:"Mundo Real", icono:"🥛"},
+  {id:312, texto:"Kilos de arroz consumidos al año", valor_real:500000000000, valor_mostrar:"500 mil millones", categoria:"Mundo Real", icono:"🍚"},
+  {id:313, texto:"Pizzerías en Nueva York", valor_real:2500, valor_mostrar:"2.500", categoria:"Mundo Real", icono:"🍕"},
+  {id:314, texto:"Kilos de pasta consumidos por italiano/año", valor_real:23, valor_mostrar:"23", categoria:"Mundo Real", icono:"🍝"},
+  {id:315, texto:"Tipos de queso francés", valor_real:1200, valor_mostrar:"1.200", categoria:"Mundo Real", icono:"🧀"},
+  {id:316, texto:"Sabores de helado inventados", valor_real:1000, valor_mostrar:"1.000", categoria:"Mundo Real", icono:"🍦"},
+  {id:317, texto:"Millonarios en el mundo (USD)", valor_real:59000000, valor_mostrar:"59 millones", categoria:"Mundo Real", icono:"💰"},
+  {id:318, texto:"Multimillonarios (Billionaires)", valor_real:2600, valor_mostrar:"2.600", categoria:"Mundo Real", icono:"🎩"},
+  {id:319, texto:"PIB mundial en dólares", valor_real:100000000000000, valor_mostrar:"100 billones", categoria:"Mundo Real", icono:"📈"},
+  {id:320, texto:"Deuda global en dólares", valor_real:300000000000000, valor_mostrar:"300 billones", categoria:"Mundo Real", icono:"📉", boss:true},
+  {id:321, texto:"Reservas de oro en toneladas", valor_real:200000, valor_mostrar:"200 mil", categoria:"Mundo Real", icono:"🥇"},
+  {id:322, texto:"Billetes de Monopoly impresos al año", valor_real:30000000000, valor_mostrar:"30 mil millones", categoria:"Cultura", icono:"🎲"},
+  {id:323, texto:"Valor de la marca Apple en USD", valor_real:3000000000000, valor_mostrar:"3 billones", categoria:"Mundo Real", icono:"🍏"},
+  {id:324, texto:"Empleados de Amazon", valor_real:1500000, valor_mostrar:"1,5 millones", categoria:"Mundo Real", icono:"📦"},
+  {id:325, texto:"Empleados de Walmart", valor_real:2300000, valor_mostrar:"2,3 millones", categoria:"Mundo Real", icono:"🛒"},
+  {id:326, texto:"Universidades en el mundo", valor_real:25000, valor_mostrar:"25 mil", categoria:"Mundo Real", icono:"🎓"},
+  {id:327, texto:"Estudiantes universitarios", valor_real:220000000, valor_mostrar:"220 millones", categoria:"Mundo Real", icono:"🧑‍🎓"},
+  {id:328, texto:"Bibliotecas en el mundo", valor_real:400000, valor_mostrar:"400 mil", categoria:"Cultura", icono:"📚"},
+  {id:329, texto:"Hospitales en el mundo", valor_real:160000, valor_mostrar:"160 mil", categoria:"Mundo Real", icono:"🏥"},
+  {id:330, texto:"Habitaciones de hotel en el mundo", valor_real:17000000, valor_mostrar:"17 millones", categoria:"Mundo Real", icono:"🏨"},
+  {id:331, texto:"Presos en el mundo", valor_real:10000000, valor_mostrar:"10 millones", categoria:"Mundo Real", icono:"⛓️"},
+  {id:332, texto:"Muertes por año", valor_real:60000000, valor_mostrar:"60 millones", categoria:"Mundo Real", icono:"🪦"},
+  {id:333, texto:"Nacimientos por año", valor_real:140000000, valor_mostrar:"140 millones", categoria:"Mundo Real", icono:"🍼"},
+  {id:334, texto:"Médicos en el mundo", valor_real:12000000, valor_mostrar:"12 millones", categoria:"Mundo Real", icono:"⚕️"},
+  {id:335, texto:"Profesores en el mundo", valor_real:85000000, valor_mostrar:"85 millones", categoria:"Mundo Real", icono:"🏫"},
+  {id:336, texto:"Relojes fabricados al año", valor_real:1000000000, valor_mostrar:"1.000 millones", categoria:"Mundo Real", icono:"⌚"},
+  {id:337, texto:"Zapatos fabricados al año", valor_real:24000000000, valor_mostrar:"24 mil millones", categoria:"Mundo Real", icono:"👞"},
+  {id:338, texto:"Prendas de ropa fabricadas al año", valor_real:100000000000, valor_mostrar:"100 mil millones", categoria:"Mundo Real", icono:"👕"},
+  {id:339, texto:"Litros de petróleo consumidos al día", valor_real:15000000000, valor_mostrar:"15 mil millones", categoria:"Mundo Real", icono:"🛢️"},
+  {id:340, texto:"Barriles de petróleo producidos al día", valor_real:100000000, valor_mostrar:"100 millones", categoria:"Mundo Real", icono:"⛽"},
+  {id:341, texto:"Turbinas eólicas en el mundo", valor_real:400000, valor_mostrar:"400 mil", categoria:"Tecnología", icono:"🌬️"},
+  {id:342, texto:"Paneles solares instalados", valor_real:3000000000, valor_mostrar:"3.000 millones", categoria:"Tecnología", icono:"☀️"},
+  {id:343, texto:"Reactores nucleares activos", valor_real:436, valor_mostrar:"436", categoria:"Tecnología", icono:"☢️"},
+  {id:344, texto:"Armas nucleares en el mundo", valor_real:12000, valor_mostrar:"12 mil", categoria:"Mundo Real", icono:"🚀"},
+  {id:345, texto:"Efectivos militares activos", valor_real:20000000, valor_mostrar:"20 millones", categoria:"Mundo Real", icono:"🪖"},
+  {id:346, texto:"Tanques de guerra en el mundo", valor_real:70000, valor_mostrar:"70 mil", categoria:"Mundo Real", icono:"🛡️"},
+  {id:347, texto:"Aviones de combate", valor_real:25000, valor_mostrar:"25 mil", categoria:"Mundo Real", icono:"🛩️"},
+  {id:348, texto:"Portaaviones activos", valor_real:21, valor_mostrar:"21", categoria:"Mundo Real", icono:"🛳️"},
+  {id:349, texto:"Drones civiles vendidos al año", valor_real:20000000, valor_mostrar:"20 millones", categoria:"Tecnología", icono:"🛸"},
+  {id:350, texto:"Cámaras de seguridad en el mundo", valor_real:1000000000, valor_mostrar:"1.000 millones", categoria:"Tecnología", icono:"📹"},
+  {id:351, texto:"Formas de jugar las primeras 4 jugadas de ajedrez", valor_real:318979564000, valor_mostrar:"318 mil millones", categoria:"Combinatoria", icono:"♟️"},
+  {id:352, texto:"Formas de hacer el primer movimiento en ajedrez", valor_real:20, valor_mostrar:"20", categoria:"Combinatoria", icono:"♟️"},
+  {id:353, texto:"Formas de dar el vuelto a 1 dólar", valor_real:293, valor_mostrar:"293", categoria:"Combinatoria", icono:"💵"},
+  {id:354, texto:"Combinaciones de un candado de 5 dígitos", valor_real:100000, valor_mostrar:"100 mil", categoria:"Combinatoria", icono:"🔐"},
+  {id:355, texto:"Códigos de barras EAN-13 posibles", valor_real:1000000000000, valor_mostrar:"1 billón", categoria:"Combinatoria", icono:"🛒"},
+  {id:356, texto:"Combinaciones del Eurojackpot", valor_real:139838160, valor_mostrar:"139 millones", categoria:"Combinatoria", icono:"🎟️"},
+  {id:357, texto:"Combinaciones de Powerball", valor_real:292201338, valor_mostrar:"292 millones", categoria:"Combinatoria", icono:"🎰"},
+  {id:358, texto:"Combinaciones de Mega Millions", valor_real:302575350, valor_mostrar:"302 millones", categoria:"Combinatoria", icono:"🎰"},
+  {id:359, texto:"Formas de acomodar 8 reinas en ajedrez", valor_real:92, valor_mostrar:"92", categoria:"Combinatoria", icono:"👑"},
+  {id:360, texto:"Formas de recorrer ajedrez con el caballo", valor_real:26534728821064, valor_mostrar:"26 billones", categoria:"Combinatoria", icono:"🐴"},
+  {id:361, texto:"Permutaciones de 5 elementos", valor_real:120, valor_mostrar:"120", categoria:"Combinatoria", icono:"🔄"},
+  {id:362, texto:"Permutaciones de 10 elementos", valor_real:3628800, valor_mostrar:"3,6 millones", categoria:"Combinatoria", icono:"🔄"},
+  {id:363, texto:"Combinaciones de placa de auto de 6 caracteres", valor_real:308915776, valor_mostrar:"308 millones", categoria:"Combinatoria", icono:"🚗"},
+  {id:364, texto:"Combinaciones de direcciones MAC", valor_real:281474976710656, valor_mostrar:"281 billones", categoria:"Tecnología", icono:"💻"},
+  {id:365, texto:"Hashes SHA-256 posibles", valor_real:1.15e77, valor_mostrar:"1,15×10⁷⁷", categoria:"Tecnología", icono:"🔐", boss:true},
+  {id:366, texto:"Hashes MD5 posibles", valor_real:3.4e38, valor_mostrar:"3,4×10³⁸", categoria:"Tecnología", icono:"🔑", boss:true},
+  {id:367, texto:"Semillas (seeds) posibles en Minecraft", valor_real:1.84e19, valor_mostrar:"18 trillones", categoria:"Combinatoria", icono:"🌱"},
+  {id:368, texto:"Colores en formato Hexadecimal", valor_real:16777216, valor_mostrar:"16,7 millones", categoria:"Tecnología", icono:"🎨"},
+  {id:369, texto:"Formas de conectar 2 bloques de Lego", valor_real:24, valor_mostrar:"24", categoria:"Combinatoria", icono:"🧱"},
+  {id:370, texto:"Formas de conectar 6 bloques de Lego", valor_real:915103765, valor_mostrar:"915 millones", categoria:"Combinatoria", icono:"🧱"},
+  {id:371, texto:"Horas en un milenio", valor_real:8766000, valor_mostrar:"8,7 millones", categoria:"Tiempo", icono:"⌛"},
+  {id:372, texto:"Segundos en una vida de 80 años", valor_real:2522880000, valor_mostrar:"2.500 millones", categoria:"Tiempo", icono:"⏱️"},
+  {id:373, texto:"Días transcurridos desde el año 0", valor_real:740000, valor_mostrar:"740 mil", categoria:"Tiempo", icono:"📅"},
+  {id:374, texto:"Semanas en un año", valor_real:52, valor_mostrar:"52", categoria:"Tiempo", icono:"📆"},
+  {id:375, texto:"Meses en un siglo", valor_real:1200, valor_mostrar:"1.200", categoria:"Tiempo", icono:"🗓️"},
+  {id:376, texto:"Latidos humanos en 1 hora", valor_real:4800, valor_mostrar:"4.800", categoria:"Cuerpo Humano", icono:"❤️"},
+  {id:377, texto:"Parpadeos en 1 hora", valor_real:1200, valor_mostrar:"1.200", categoria:"Cuerpo Humano", icono:"👁️"},
+  {id:378, texto:"Días en un año bisiesto", valor_real:366, valor_mostrar:"366", categoria:"Tiempo", icono:"📆"},
+  {id:379, texto:"Días en el año marciano", valor_real:687, valor_mostrar:"687", categoria:"Astronomía", icono:"🔴"},
+  {id:380, texto:"Días en el año de Júpiter", valor_real:4333, valor_mostrar:"4.333", categoria:"Astronomía", icono:"🪐"},
+  {id:381, texto:"Células humanas que mueren en un día", valor_real:50000000000, valor_mostrar:"50 mil millones", categoria:"Cuerpo Humano", icono:"🧫"},
+  {id:382, texto:"Átomos en un glóbulo rojo", valor_real:1e14, valor_mostrar:"100 billones", categoria:"Ciencia", icono:"🩸"},
+  {id:383, texto:"Proteínas en una célula", valor_real:42000000, valor_mostrar:"42 millones", categoria:"Ciencia", icono:"🧬"},
+  {id:384, texto:"Partículas de virus en la Tierra", valor_real:1e31, valor_mostrar:"1×10³¹", categoria:"Naturaleza", icono:"🦠", boss:true},
+  {id:385, texto:"Frecuencia de la red eléctrica en Europa (Hz)", valor_real:50, valor_mostrar:"50", categoria:"Tecnología", icono:"⚡"},
+  {id:386, texto:"Frecuencia de la red eléctrica en EE.UU. (Hz)", valor_real:60, valor_mostrar:"60", categoria:"Tecnología", icono:"⚡"},
+  {id:387, texto:"Watts consumidos por el cerebro", valor_real:20, valor_mostrar:"20", categoria:"Cuerpo Humano", icono:"💡"},
+  {id:388, texto:"Bits en un Terabyte", valor_real:8000000000000, valor_mostrar:"8 billones", categoria:"Tecnología", icono:"💾"},
+  {id:389, texto:"Bytes en un Petabyte", valor_real:1125899906842624, valor_mostrar:"1,1 mil billones", categoria:"Tecnología", icono:"💽"},
+  {id:390, texto:"Grados en un círculo", valor_real:360, valor_mostrar:"360", categoria:"Ciencia", icono:"⭕"},
+  {id:391, texto:"Lados de un Icoságono", valor_real:20, valor_mostrar:"20", categoria:"Ciencia", icono:"🛑"},
+  {id:392, texto:"Diagonales de un decágono", valor_real:35, valor_mostrar:"35", categoria:"Ciencia", icono:"📐"},
+  {id:393, texto:"Minutos en un año", valor_real:525600, valor_mostrar:"525 mil", categoria:"Tiempo", icono:"⏳"},
+  {id:394, texto:"Centímetros en un kilómetro", valor_real:100000, valor_mostrar:"100 mil", categoria:"Ciencia", icono:"📏"},
+  {id:395, texto:"Milímetros en una milla", valor_real:1609344, valor_mostrar:"1,6 millones", categoria:"Ciencia", icono:"📏"},
+  {id:396, texto:"Pulgadas en una milla", valor_real:63360, valor_mostrar:"63 mil", categoria:"Ciencia", icono:"📏"},
+  {id:397, texto:"Onzas en un galón", valor_real:128, valor_mostrar:"128", categoria:"Ciencia", icono:"🥛"},
+  {id:398, texto:"Libras en una tonelada métrica", valor_real:2204, valor_mostrar:"2.204", categoria:"Ciencia", icono:"⚖️"},
+  {id:399, texto:"Vatios generados por un relámpago", valor_real:10000000000, valor_mostrar:"10 mil millones", categoria:"Naturaleza", icono:"🌩️"},
+  {id:400, texto:"Amperios en un rayo", valor_real:30000, valor_mostrar:"30 mil", categoria:"Naturaleza", icono:"⚡"},
+  {id:401, texto:"Años desde la invención de la escritura", valor_real:5000, valor_mostrar:"5.000", categoria:"Historia", icono:"✍️"},
+  {id:402, texto:"Años desde la construcción de las pirámides", valor_real:4500, valor_mostrar:"4.500", categoria:"Historia", icono:"🏜️"},
+  {id:403, texto:"Años desde la caída de Roma", valor_real:1550, valor_mostrar:"1.550", categoria:"Historia", icono:"🏛️"},
+  {id:404, texto:"Tumbas en el Valle de los Reyes", valor_real:63, valor_mostrar:"63", categoria:"Historia", icono:"⚰️"},
+  {id:405, texto:"Emperadores romanos", valor_real:70, valor_mostrar:"70", categoria:"Historia", icono:"👑"},
+  {id:406, texto:"Reyes de Inglaterra desde 1066", valor_real:41, valor_mostrar:"41", categoria:"Historia", icono:"👑"},
+  {id:407, texto:"Presidentes de EE.UU.", valor_real:46, valor_mostrar:"46", categoria:"Historia", icono:"🦅"},
+  {id:408, texto:"Papas en la historia de la Iglesia", valor_real:266, valor_mostrar:"266", categoria:"Historia", icono:"⛪"},
+  {id:409, texto:"Estados en EE.UU.", valor_real:50, valor_mostrar:"50", categoria:"Mundo Real", icono:"🇺🇸"},
+  {id:410, texto:"Provincias en Argentina", valor_real:23, valor_mostrar:"23", categoria:"Mundo Real", icono:"🇦🇷"},
+  {id:411, texto:"Municipios en Brasil", valor_real:5568, valor_mostrar:"5.568", categoria:"Mundo Real", icono:"🇧🇷"},
+  {id:412, texto:"Cantones en Suiza", valor_real:26, valor_mostrar:"26", categoria:"Mundo Real", icono:"🇨🇭"},
+  {id:413, texto:"Prefecturas en Japón", valor_real:47, valor_mostrar:"47", categoria:"Mundo Real", icono:"🇯🇵"},
+  {id:414, texto:"Letras en el alfabeto cirílico ruso", valor_real:33, valor_mostrar:"33", categoria:"Lenguaje", icono:"🇷🇺"},
+  {id:415, texto:"Letras en el alfabeto griego", valor_real:24, valor_mostrar:"24", categoria:"Lenguaje", icono:"🇬🇷"},
+  {id:416, texto:"Letras en el alfabeto hebreo", valor_real:22, valor_mostrar:"22", categoria:"Lenguaje", icono:"🇮🇱"},
+  {id:417, texto:"Caracteres chinos en uso común", valor_real:8000, valor_mostrar:"8.000", categoria:"Lenguaje", icono:"🇨🇳"},
+  {id:418, texto:"Letras en el alfabeto español", valor_real:27, valor_mostrar:"27", categoria:"Lenguaje", icono:"🇪🇸"},
+  {id:419, texto:"Letras en el alfabeto árabe", valor_real:28, valor_mostrar:"28", categoria:"Lenguaje", icono:"🇸🇦"},
+  {id:420, texto:"Huesos en el cuello de una jirafa", valor_real:7, valor_mostrar:"7", categoria:"Naturaleza", icono:"🦒"},
+  {id:421, texto:"Corazones de un pulpo", valor_real:3, valor_mostrar:"3", categoria:"Naturaleza", icono:"🐙"},
+  {id:422, texto:"Estómagos de una vaca", valor_real:4, valor_mostrar:"4", categoria:"Naturaleza", icono:"🐄"},
+  {id:423, texto:"Ojos de una araña", valor_real:8, valor_mostrar:"8", categoria:"Naturaleza", icono:"🕷️"},
+  {id:424, texto:"Patas de un ciempiés común", valor_real:30, valor_mostrar:"30", categoria:"Naturaleza", icono:"🐛"},
+  {id:425, texto:"Patas de un milpiés récord", valor_real:1306, valor_mostrar:"1.306", categoria:"Naturaleza", icono:"🐛"},
+  {id:426, texto:"Dientes de un perro", valor_real:42, valor_mostrar:"42", categoria:"Naturaleza", icono:"🐶"},
+  {id:427, texto:"Dientes de un gato", valor_real:30, valor_mostrar:"30", categoria:"Naturaleza", icono:"🐱"},
+  {id:428, texto:"Garras en un gato", valor_real:18, valor_mostrar:"18", categoria:"Naturaleza", icono:"🐾"},
+  {id:429, texto:"Velocidad máxima de un guepardo en km/h", valor_real:120, valor_mostrar:"120", categoria:"Naturaleza", icono:"🐆"},
+  {id:430, texto:"Velocidad máxima del halcón peregrino km/h", valor_real:390, valor_mostrar:"390", categoria:"Naturaleza", icono:"🦅"},
+  {id:431, texto:"Fuerza de mordida de cocodrilo en PSI", valor_real:3700, valor_mostrar:"3.700", categoria:"Naturaleza", icono:"🐊"},
+  {id:432, texto:"Peso de una ballena azul en kg", valor_real:150000, valor_mostrar:"150 mil", categoria:"Naturaleza", icono:"🐋"},
+  {id:433, texto:"Vida media de una mosca en días", valor_real:28, valor_mostrar:"28", categoria:"Naturaleza", icono:"🪰"},
+  {id:434, texto:"Vida media de una tortuga gigante en años", valor_real:150, valor_mostrar:"150", categoria:"Naturaleza", icono:"🐢"},
+  {id:435, texto:"Récord de vida humana en años", valor_real:122, valor_mostrar:"122", categoria:"Cuerpo Humano", icono:"👵"},
+  {id:436, texto:"Altura de la Torre Eiffel en metros", valor_real:330, valor_mostrar:"330", categoria:"Mundo Real", icono:"🗼"},
+  {id:437, texto:"Altura del Burj Khalifa en metros", valor_real:828, valor_mostrar:"828", categoria:"Mundo Real", icono:"🏢"},
+  {id:438, texto:"Pisos del Empire State", valor_real:102, valor_mostrar:"102", categoria:"Mundo Real", icono:"🏙️"},
+  {id:439, texto:"Habitaciones en el Palacio de Versalles", valor_real:2300, valor_mostrar:"2.300", categoria:"Cultura", icono:"🏰"},
+  {id:440, texto:"Puertas en la Casa Blanca", valor_real:412, valor_mostrar:"412", categoria:"Mundo Real", icono:"🚪"},
+  {id:441, texto:"Ventanas en el Palacio de Buckingham", valor_real:760, valor_mostrar:"760", categoria:"Mundo Real", icono:"🪟"},
+  {id:442, texto:"Longitud de la Muralla China en km", valor_real:21196, valor_mostrar:"21 mil", categoria:"Mundo Real", icono:"🧱"},
+  {id:443, texto:"Peso de la Estatua de la Libertad en toneladas", valor_real:225, valor_mostrar:"225", categoria:"Mundo Real", icono:"🗽"},
+  {id:444, texto:"Litros en una piscina olímpica", valor_real:2500000, valor_mostrar:"2,5 millones", categoria:"Mundo Real", icono:"🏊"},
+  {id:445, texto:"Distancia de un maratón en metros", valor_real:42195, valor_mostrar:"42.195", categoria:"Mundo Real", icono:"🏃"},
+  {id:446, texto:"Huecos en una pelota de golf", valor_real:336, valor_mostrar:"336", categoria:"Cultura", icono:"⛳"},
+  {id:447, texto:"Casillas en un tablero de Scrabble", valor_real:225, valor_mostrar:"225", categoria:"Cultura", icono:"🔠"},
+  {id:448, texto:"Fichas en un juego de dominó", valor_real:28, valor_mostrar:"28", categoria:"Cultura", icono:"🁣"},
+  {id:449, texto:"Fichas en el Mahjong", valor_real:144, valor_mostrar:"144", categoria:"Cultura", icono:"🀄"},
+  {id:450, texto:"Triángulos en un tablero de Backgammon", valor_real:24, valor_mostrar:"24", categoria:"Cultura", icono:"🎲"},
+  {id:451, texto:"Letras en la palabra más larga del mundo", valor_real:189819, valor_mostrar:"189 mil", categoria:"Lenguaje", icono:"📜"},
+  {id:452, texto:"Idiomas hablados por C-3PO", valor_real:6000000, valor_mostrar:"6 millones", categoria:"Cultura", icono:"🤖"},
+  {id:453, texto:"Líneas del metro de Nueva York", valor_real:28, valor_mostrar:"28", categoria:"Mundo Real", icono:"🚇"},
+  {id:454, texto:"Estaciones de tren en Tokio", valor_real:882, valor_mostrar:"882", categoria:"Mundo Real", icono:"🚆"},
+  {id:455, texto:"Personas que cruzan Shibuya por semáforo", valor_real:3000, valor_mostrar:"3.000", categoria:"Mundo Real", icono:"🚶"},
+  {id:456, texto:"Semáforos en la ciudad de Nueva York", valor_real:13000, valor_mostrar:"13 mil", categoria:"Mundo Real", icono:"🚥"},
+  {id:457, texto:"Taxis amarillos en Nueva York", valor_real:13500, valor_mostrar:"13,5 mil", categoria:"Mundo Real", icono:"🚕"},
+  {id:458, texto:"Canales en Venecia", valor_real:150, valor_mostrar:"150", categoria:"Mundo Real", icono:"🛶"},
+  {id:459, texto:"Puentes en Venecia", valor_real:400, valor_mostrar:"400", categoria:"Mundo Real", icono:"🌉"},
+  {id:460, texto:"Puentes en Ámsterdam", valor_real:1200, valor_mostrar:"1.200", categoria:"Mundo Real", icono:"🚲"},
+  {id:461, texto:"Estrellas en la bandera de EE.UU.", valor_real:50, valor_mostrar:"50", categoria:"Mundo Real", icono:"🇺🇸"},
+  {id:462, texto:"Estrellas en la bandera de Brasil", valor_real:27, valor_mostrar:"27", categoria:"Mundo Real", icono:"🇧🇷"},
+  {id:463, texto:"Círculos olímpicos", valor_real:5, valor_mostrar:"5", categoria:"Cultura", icono:"⭕"},
+  {id:464, texto:"Colores en un arcoíris", valor_real:7, valor_mostrar:"7", categoria:"Ciencia", icono:"🌈"},
+  {id:465, texto:"Teclas en un piano estándar", valor_real:88, valor_mostrar:"88", categoria:"Cultura", icono:"🎹"},
+  {id:466, texto:"Cuerdas en un arpa", valor_real:47, valor_mostrar:"47", categoria:"Cultura", icono:"🪕"},
+  {id:467, texto:"Válvulas en una trompeta", valor_real:3, valor_mostrar:"3", categoria:"Cultura", icono:"🎺"},
+  {id:468, texto:"Cuerdas en un violín", valor_real:4, valor_mostrar:"4", categoria:"Cultura", icono:"🎻"},
+  {id:469, texto:"Cuerdas en una guitarra estándar", valor_real:6, valor_mostrar:"6", categoria:"Cultura", icono:"🎸"},
+  {id:470, texto:"Pedales en un coche manual", valor_real:3, valor_mostrar:"3", categoria:"Tecnología", icono:"🏎️"},
+  {id:471, texto:"Botones en un control de PS5", valor_real:17, valor_mostrar:"17", categoria:"Tecnología", icono:"🎮"},
+  {id:472, texto:"Cartas de tarot en un mazo", valor_real:78, valor_mostrar:"78", categoria:"Cultura", icono:"🃏"},
+  {id:473, texto:"Cuadros por segundo en cine tradicional", valor_real:24, valor_mostrar:"24", categoria:"Cultura", icono:"🎞️"},
+  {id:474, texto:"Fotogramas en una película de 2 horas", valor_real:172800, valor_mostrar:"172 mil", categoria:"Cultura", icono:"🎬"},
+  {id:475, texto:"Huesos en la mano humana", valor_real:27, valor_mostrar:"27", categoria:"Cuerpo Humano", icono:"✋"},
+  {id:476, texto:"Huesos en el pie humano", valor_real:26, valor_mostrar:"26", categoria:"Cuerpo Humano", icono:"🦶"},
+  {id:477, texto:"Dedos en humanos (manos y pies)", valor_real:20, valor_mostrar:"20", categoria:"Cuerpo Humano", icono:"🖐️"},
+  {id:478, texto:"Cuartos de fase lunar", valor_real:4, valor_mostrar:"4", categoria:"Astronomía", icono:"🌒"},
+  {id:479, texto:"Planetas enanos en el sistema solar", valor_real:5, valor_mostrar:"5", categoria:"Astronomía", icono:"🪐"},
+  {id:480, texto:"Kilómetros de costa de Canadá", valor_real:202080, valor_mostrar:"202 mil", categoria:"Mundo Real", icono:"🇨🇦"},
+  {id:481, texto:"Especies de tiburones", valor_real:500, valor_mostrar:"500", categoria:"Naturaleza", icono:"🦈"},
+  {id:482, texto:"Especies de serpientes", valor_real:3600, valor_mostrar:"3.600", categoria:"Naturaleza", icono:"🐍"},
+  {id:483, texto:"Especies de ranas", valor_real:5000, valor_mostrar:"5.000", categoria:"Naturaleza", icono:"🐸"},
+  {id:484, texto:"Especies de orquídeas", valor_real:28000, valor_mostrar:"28 mil", categoria:"Naturaleza", icono:"🌸"},
+  {id:485, texto:"Células receptoras de luz en el ojo", valor_real:130000000, valor_mostrar:"130 millones", categoria:"Cuerpo Humano", icono:"👁️"},
+  {id:486, texto:"Receptores de dolor en la piel humana", valor_real:3000000, valor_mostrar:"3 millones", categoria:"Cuerpo Humano", icono:"🔥"},
+  {id:487, texto:"Vasos capilares en los pulmones", valor_real:300000000, valor_mostrar:"300 millones", categoria:"Cuerpo Humano", icono:"🫁"},
+  {id:488, texto:"Kilos de presión en la fosa de las Marianas", valor_real:108600, valor_mostrar:"108 mil", categoria:"Naturaleza", icono:"⚓"},
+  {id:489, texto:"Edad del árbol más viejo del mundo", valor_real:5000, valor_mostrar:"5.000", categoria:"Naturaleza", icono:"🌲"},
+  {id:490, texto:"Capas de la atmósfera terrestre", valor_real:5, valor_mostrar:"5", categoria:"Astronomía", icono:"☁️"},
+  {id:491, texto:"Países que usan el Euro", valor_real:20, valor_mostrar:"20", categoria:"Mundo Real", icono:"💶"},
+  {id:492, texto:"Húsares alados en la Batalla de Viena", valor_real:3000, valor_mostrar:"3.000", categoria:"Historia", icono:"🐎"},
+  {id:493, texto:"Soldados en la Segunda Guerra Mundial", valor_real:70000000, valor_mostrar:"70 millones", categoria:"Historia", icono:"🪖"},
+  {id:494, texto:"Espectadores de la final del Mundial 2022", valor_real:1500000000, valor_mostrar:"1.500 millones", categoria:"Deportes", icono:"⚽"},
+  {id:495, texto:"Estrellas Michelin en Tokio", valor_real:183, valor_mostrar:"183", categoria:"Cultura", icono:"⭐"},
+  {id:496, texto:"Pasajeros en el Titanic", valor_real:2240, valor_mostrar:"2.240", categoria:"Historia", icono:"🚢"},
+  {id:497, texto:"Botes salvavidas en el Titanic", valor_real:20, valor_mostrar:"20", categoria:"Historia", icono:"🛟"},
+  {id:498, texto:"Millonésimas de segundo en un segundo", valor_real:1000000, valor_mostrar:"1 millón", categoria:"Tiempo", icono:"⏱️"},
+  {id:499, texto:"Ceros en un Googolplex", valor_real:1e100, valor_mostrar:"1×10¹⁰⁰", categoria:"Matemáticas", icono:"♾️", boss:true},
+  {id:500, texto:"El numero de Valens", valor_real:429, valor_mostrar:"429", categoria:"Creador", icono:"💾"}
+];
+
+const BOSS_POOL = DB.filter(c=>c.boss);
+
+const ACHIEVEMENTS = [
+  {id:"primer_paso",label:"Primer paso",icon:"🥇",check:s=>s.totalCorrect>=1},
+  {id:"racha_5",label:"Racha de 5",icon:"🔥",check:s=>s.streak>=5},
+  {id:"racha_10",label:"Racha de 10",icon:"🚀",check:s=>s.streak>=10},
+  {id:"racha_20",label:"Racha de 20",icon:"🌟",check:s=>s.streak>=20},
+  {id:"domador_fase3",label:"Domador del caos",icon:"🧠",check:s=>s.solvedFase3},
+  {id:"cazador_de_jefes",label:"Cazador de jefes",icon:"⚔️",check:s=>s.bossesWon>=1},
+];
+
+let mode="infinite", rngFn=Math.random;
+let leftCard=null, rightCard=null, recentIds=[], locked=false, bossActive=false;
+let streak=0, totalCorrect=0, solvedFase3=false, bossesWon=0, sessionBest=0;
+let taScore=0, taTimeLeft=60, taInterval=null;
+let unlockedAch=new Set();
+let muted=false, reducedMotion=false;
+
+const el = id => document.getElementById(id);
+
+function mulberry32(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;};}
+function hashStr(s){let h=0;for(let i=0;i<s.length;i++){h=Math.imul(31,h)+s.charCodeAt(i)|0;}return h;}
+function todaySeed(){const d=new Date();return hashStr(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}-magnitudes`);}
+
+let actx=null, ambientGain=null, ambientStarted=false;
+function ensureAudio(){
+  if(!actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){return;} }
+  if(actx.state==='suspended') actx.resume();
+  startAmbient();
+}
+function tone(freq,dur,type='sine',vol=0.16,delay=0,freqEnd=null){
+  if(muted||!actx) return;
+  const t0=actx.currentTime+delay;
+  const osc=actx.createOscillator(), gain=actx.createGain();
+  osc.type=type; osc.frequency.setValueAtTime(freq,t0);
+  if(freqEnd) osc.frequency.exponentialRampToValueAtTime(freqEnd, t0+dur);
+  gain.gain.setValueAtTime(0,t0);
+  gain.gain.linearRampToValueAtTime(vol,t0+0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  osc.connect(gain); gain.connect(actx.destination);
+  osc.start(t0); osc.stop(t0+dur+0.05);
+}
+function noiseBurst(dur,vol=0.12,delay=0){
+  if(muted||!actx) return;
+  const bufSize=actx.sampleRate*dur;
+  const buf=actx.createBuffer(1,bufSize,actx.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<bufSize;i++){ data[i]=(Math.random()*2-1)*(1-i/bufSize); }
+  const src=actx.createBufferSource(); src.buffer=buf;
+  const gain=actx.createGain(); gain.gain.value=vol;
+  const filt=actx.createBiquadFilter(); filt.type='bandpass'; filt.frequency.value=1200;
+  src.connect(filt); filt.connect(gain); gain.connect(actx.destination);
+  src.start(actx.currentTime+delay);
+}
+function startAmbient(){
+  if(ambientStarted||!actx) return; ambientStarted=true;
+  const o1=actx.createOscillator(); o1.type='sine'; o1.frequency.value=110;
+  const o2=actx.createOscillator(); o2.type='sine'; o2.frequency.value=164.81;
+  const g=actx.createGain(); g.gain.value=muted?0:0.03; ambientGain=g;
+  const lfo=actx.createOscillator(); lfo.frequency.value=0.06;
+  const lfoGain=actx.createGain(); lfoGain.gain.value=0.012;
+  lfo.connect(lfoGain); lfoGain.connect(g.gain);
+  o1.connect(g); o2.connect(g); g.connect(actx.destination);
+  o1.start(); o2.start(); lfo.start();
+}
+function playAnticipation(tier){
+  const dur = tier==='boss'?1.1: tier==='huge'?0.8: tier==='big'?0.55:0.35;
+  tone(160,dur,'sawtooth',0.07,0,tier==='boss'?70:120);
+  if(tier==='boss'||tier==='huge') tone(55,dur+0.3,'sine',0.1,0,40);
+}
+function playTick(progress,tier){
+  const base = tier==='boss'?340:380;
+  tone(base+progress*300, 0.045, 'square', 0.045+progress*0.05);
+}
+function playImpactGood(tier){
+  tone(523,0.12,'sine',0.17); tone(659,0.14,'sine',0.15,0.07); tone(880,0.2,'sine',0.14,0.15);
+  tone(90,0.18,'sine',0.12);
+  if(tier==='huge'||tier==='boss'){ tone(1100,0.22,'sine',0.1,0.22); }
+}
+function playImpactBad(tier){
+  tone(180,0.4,'sawtooth',0.16,0,70); tone(70,0.35,'sine',0.16);
+  noiseBurst(0.25,0.14);
+  if(tier==='huge'||tier==='boss'){ tone(45,0.6,'sawtooth',0.15,0.05,28); noiseBurst(0.4,0.12,0.1); }
+}
+function playMilestone(){ tone(523,0.1,'sine',0.14); tone(659,0.1,'sine',0.13,0.1); tone(784,0.16,'sine',0.12,0.2); }
+function vibrate(p){ if(navigator.vibrate && !reducedMotion) navigator.vibrate(p); }
+
+const cv=el('bgfx'); const ctx=cv.getContext('2d');
+let ambient=[]; let bursts=[]; let bgAccent=[6,182,212];
+function resizeCanvas(){ cv.width=window.innerWidth; cv.height=window.innerHeight; }
+window.addEventListener('resize',resizeCanvas); resizeCanvas();
+function initAmbient(n){ ambient=[]; for(let i=0;i<n;i++){ ambient.push({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.6+0.3,vy:Math.random()*0.15+0.03,alpha:Math.random()*0.5+0.15}); } }
+initAmbient(70);
+function spawnBurst(x,y,good,tier){
+  const n = tier==='boss'?42: tier==='huge'?28: tier==='big'?16:9;
+  const col = good ? [16,185,129] : [239,68,68];
+  for(let i=0;i<n;i++){
+    const ang=Math.random()*Math.PI*2; const spd=(Math.random()*3.2+1.2)*(tier==='boss'?1.6:1);
+    bursts.push({x,y,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd-1.5,r:Math.random()*2.4+1.2,life:1,color:col});
+  }
+}
+function loopParticles(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.fillStyle=`rgb(${bgAccent.join(',')})`;
+  for(const p of ambient){
+    ctx.globalAlpha=p.alpha;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+    p.y-=p.vy; if(p.y<-5){p.y=cv.height+5; p.x=Math.random()*cv.width;}
+  }
+  for(let i=bursts.length-1;i>=0;i--){
+    const b=bursts[i];
+    b.x+=b.vx; b.y+=b.vy; b.vy+=0.07; b.life-=0.018;
+    if(b.life<=0){ bursts.splice(i,1); continue; }
+    ctx.globalAlpha=Math.max(0,b.life);
+    ctx.fillStyle=`rgb(${b.color.join(',')})`;
+    ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,Math.PI*2); ctx.fill();
+  }
+  ctx.globalAlpha=1;
+  requestAnimationFrame(loopParticles);
+}
+loopParticles();
+
+function toast(icon,text){
+  const t=document.createElement('div'); t.className='toast'; t.innerHTML=`<span>${icon}</span><span>${text}</span>`;
+  el('toasts').appendChild(t); setTimeout(()=>t.remove(),3000);
+}
+function checkAchievements(){
+  const s={streak,totalCorrect,solvedFase3,bossesWon};
+  for(const a of ACHIEVEMENTS){
+    if(!unlockedAch.has(a.id) && a.check(s)){ unlockedAch.add(a.id); playMilestone(); toast(a.icon,`Logro: ${a.label}`); }
+  }
+}
+
+function pickCard(excludeId, s, forceBoss, leftCardVal){
+  let maxDiff = Math.max(0.8, 40 - s * 0.45);
+  let pool = DB.filter(c => c.id !== excludeId && !recentIds.includes(c.id));
+  if(forceBoss) {
+    pool = pool.filter(c => c.boss);
+  }
+  let leftLog = leftCardVal ? Math.log10(leftCardVal) : 10;
+  let valid = pool.filter(c => Math.abs(Math.log10(c.valor_real) - leftLog) <= maxDiff);
+  if(valid.length === 0) valid = pool;
+  const choice = valid[Math.floor(rngFn() * valid.length)];
+  recentIds.push(choice.id);
+  if(recentIds.length > 25) recentIds.shift();
+  return choice;
+}
+
+function renderLeft(card){
+  el('iconLeft').textContent=card.icono; el('catLeft').textContent=card.categoria;
+  el('textoLeft').textContent=card.texto; el('numLeft').textContent=card.valor_mostrar;
+}
+function renderRightHidden(card){
+  el('iconRight').textContent="❔"; el('catRight').textContent=card.categoria; el('textoRight').textContent=card.texto;
+  const numEl=el('numRight'); numEl.textContent="???"; numEl.classList.remove('revealed');
+}
+function setMarker(value){
+  const log=Math.log10(value); const pct=Math.max(0,Math.min(100,((log-3)/127)*100));
+  el('marker').style.left=pct+'%';
+}
+function bumpStreak(){ const n=el('streakNum'); n.classList.remove('bump'); void n.offsetWidth; n.classList.add('bump'); }
+
+function getTier(){
+  if(bossActive) return 'boss';
+  if(rightCard.valor_real >= 1e18 || leftCard.valor_real >= 1e18) return 'huge';
+  if(rightCard.valor_real >= 1e9 || leftCard.valor_real >= 1e9) return 'big';
+  return 'normal';
+}
+
+function startRound(forceBoss){
+  locked=false; bossActive=!!forceBoss;
+  document.body.classList.toggle('boss-active', bossActive);
+  el('btnChico').disabled=false; el('btnGrande').disabled=false;
+  el('cardLeft').classList.remove('correct','wrong','shakecard','shakebig');
+  el('cardRight').classList.remove('correct','wrong','shakecard','shakebig');
+  renderLeft(leftCard); renderRightHidden(rightCard);
+  el('streakNum').textContent = mode==='timeattack' ? taScore : streak;
+}
+
+function spinAndLock(targetText, tier, onDone){
+  const numEl=el('numRight'); const iconEl=el('iconRight');
+  const totalTicks = tier==='boss'?30: tier==='huge'?22: tier==='big'?15:10;
+  const anticipationDelay = tier==='boss'?550: tier==='huge'?400: tier==='big'?280:180;
+  const chars="0123456789,.×";
+  playAnticipation(tier);
+  numEl.textContent="···";
+  let i=0;
+  setTimeout(function nextTick(){
+    i++;
+    if(i===1) iconEl.textContent=rightCard.icono;
+    const progress=i/totalTicks;
+    const delay = 26 + Math.pow(progress,3)*150;
+    let fake=""; const len=Math.max(6,Math.min(targetText.length,14));
+    for(let k=0;k<len;k++){ fake+=chars[Math.floor(Math.random()*chars.length)]; }
+    numEl.textContent=fake;
+    playTick(progress,tier);
+    if(i<totalTicks){ setTimeout(nextTick,delay); }
+    else { numEl.textContent=targetText; numEl.classList.add('revealed'); onDone(); }
+  }, anticipationDelay);
+}
+
+function impactEffect(isCorrect, tier){
+  const flash=document.createElement('div');
+  flash.className='flash-overlay '+(isCorrect?'flash-good':'flash-bad');
+  document.body.appendChild(flash); setTimeout(()=>flash.remove(),550);
+
+  const rect=el('cardRight').getBoundingClientRect();
+  spawnBurst(rect.left+rect.width/2, rect.top+rect.height/2, isCorrect, tier);
+
+  const cardEl=el('cardRight');
+  cardEl.classList.add(isCorrect?'correct':'wrong');
+  cardEl.classList.add('impact-punch');
+  setTimeout(()=>cardEl.classList.remove('impact-punch'),380);
+
+  if(tier!=='normal'){
+    cardEl.classList.add(tier==='boss'?'shakebig':'shakecard');
+  }
+  if(tier==='huge'||tier==='boss'){
+    el('arena').classList.add('glitch');
+    setTimeout(()=>el('arena').classList.remove('glitch'),450);
+  }
+  if(isCorrect){ playImpactGood(tier); } else { playImpactBad(tier); }
+  vibrate(isCorrect ? (tier==='boss'?[0,40,30,80]:[0,30]) : (tier==='boss'?[0,120,60,120]:[0,90]));
+}
+
+function handleGuess(guessBigger){
+  if(locked) return; locked=true;
+  el('btnChico').disabled=true; el('btnGrande').disabled=true;
+  const isCorrect=(rightCard.valor_real>leftCard.valor_real)===guessBigger;
+  const tier=getTier();
+  spinAndLock(rightCard.valor_mostrar, tier, ()=>{
+    setMarker(rightCard.valor_real);
+    impactEffect(isCorrect, tier);
+    if(isCorrect){ resolveCorrect(tier); } else { resolveWrong(tier); }
+  });
+}
+
+function resolveCorrect(tier){
+  streak++; totalCorrect++; bumpStreak();
+  el('streakNum').textContent=streak;
+  if(rightCard.valor_real >= 1e18) solvedFase3=true;
+  if(bossActive) bossesWon++;
+  checkAchievements();
+  if(streak >= 100 && mode !== 'timeattack'){
+    setTimeout(()=>showEnd(false, true), 1000);
+    return;
+  }
+  const nextIsBoss=(streak%7===0);
+  setTimeout(()=>{
+    document.body.classList.remove('boss-active');
+    leftCard=rightCard; rightCard=pickCard(leftCard.id, streak, nextIsBoss, leftCard.valor_real);
+    startRound(nextIsBoss);
+  }, 1000);
+}
+
+function resolveWrong(tier){
+  setTimeout(()=>showEnd(false, false), 1000);
+}
+
+function startTimeAttack(){
+  taScore=0; taTimeLeft=60;
+  el('streakLabel').textContent='ACIERTOS';
+  el('timerPill').style.display='flex'; el('timerNum').textContent=taTimeLeft;
+  taInterval=setInterval(()=>{
+    taTimeLeft--; el('timerNum').textContent=taTimeLeft;
+    if(taTimeLeft<=0){ clearInterval(taInterval); showEnd(true, false); }
+  },1000);
+}
+function handleGuessTimeAttack(guessBigger){
+  if(locked) return; locked=true;
+  el('btnChico').disabled=true; el('btnGrande').disabled=true;
+  const isCorrect=(rightCard.valor_real>leftCard.valor_real)===guessBigger;
+  const tier='normal';
+  spinAndLock(rightCard.valor_mostrar, tier, ()=>{
+    setMarker(rightCard.valor_real);
+    impactEffect(isCorrect, tier);
+    if(isCorrect){ taScore++; totalCorrect++; bumpStreak(); checkAchievements(); }
+    el('streakNum').textContent=taScore;
+    setTimeout(()=>{
+      el('cardLeft').classList.remove('correct','wrong'); el('cardRight').classList.remove('correct','wrong');
+      leftCard=rightCard; rightCard=pickCard(leftCard.id, taScore, false, leftCard.valor_real);
+      locked=false; el('btnChico').disabled=false; el('btnGrande').disabled=false;
+      renderLeft(leftCard); renderRightHidden(rightCard);
+    }, 520);
+  });
+}
+
+function lessonMessage(){
+  const a=leftCard,b=rightCard;
+  const bigger=a.valor_real>b.valor_real?a:b, smaller=a.valor_real>b.valor_real?b:a;
+  return `<b>${bigger.texto}</b> (${bigger.valor_mostrar}) le gana por paliza a <b>${smaller.texto.toLowerCase()}</b> (${smaller.valor_mostrar}). Así de traicionero es tu cerebro con las magnitudes.`;
+}
+function showEnd(isTimeAttack, isWin = false){
+  if(taInterval) clearInterval(taInterval);
+  el('timerPill').style.display='none'; el('streakLabel').textContent='RACHA';
+  document.body.classList.remove('boss-active');
+  const finalScore = isTimeAttack ? taScore : streak;
+  sessionBest = Math.max(sessionBest, finalScore);
+  el('bestRow').style.visibility='visible'; el('bestNum').textContent=sessionBest;
+  el('endEmoji').textContent = isWin ? '🏆' : (isTimeAttack ? '⏱️' : '💀');
+  el('endTitle').textContent = isWin ? '¡Ganaste el Juego!' : (isTimeAttack ? '¡Se acabó el tiempo!' : '¡Le erraste fiero!');
+  el('finalScore').textContent = finalScore;
+  el('finalScoreLabel').textContent = isWin ? 'Racha Perfecta' : (isTimeAttack ? 'Aciertos en 60s' : 'Racha final');
+  el('lessonText').innerHTML = isWin ? `¡Sos una bestia cósmica! Te pasaste las 100 magnitudes sin transpirar. Te ganaste el respeto definitivo.` : (isTimeAttack ? `Tu mejor racha de la sesión es <b>${sessionBest}</b>. ¡A por más!` : lessonMessage());
+  el('statsGrid').innerHTML = `
+    <div class="statbox"><div class="v">${sessionBest}</div><div class="l">Mejor de la sesión</div></div>
+    <div class="statbox"><div class="v">${totalCorrect}</div><div class="l">Aciertos totales</div></div>`;
+  const achHtml=[...unlockedAch].map(id=>{ const a=ACHIEVEMENTS.find(x=>x.id===id); return `<span class="achchip">${a.icon} ${a.label}</span>`; }).join('');
+  el('achList').innerHTML = achHtml || `<span class="achchip">Todavía sin logros — ¡intentalo de nuevo!</span>`;
+  el('endOverlay').classList.add('show');
+}
+function shareResult(){
+  const c=document.createElement('canvas'); c.width=1000; c.height=600;
+  const g=c.getContext('2d');
+  const grad=g.createLinearGradient(0,0,1000,600); grad.addColorStop(0,'#0d0d1a'); grad.addColorStop(1,'#080810');
+  g.fillStyle=grad; g.fillRect(0,0,1000,600);
+  g.fillStyle='#64748b'; g.font='600 24px monospace'; g.fillText('BATALLA DE MAGNITUDES x Valens429',60,90);
+  g.fillStyle='#a855f7'; g.font='800 140px sans-serif'; g.fillText(el('finalScore').textContent,60,280);
+  g.fillStyle='#e2e8f0'; g.font='600 26px sans-serif'; g.fillText(el('finalScoreLabel').textContent,60,330);
+  g.fillStyle='#06b6d4'; g.font='500 20px sans-serif';
+  g.fillText([...unlockedAch].slice(0,4).map(id=>ACHIEVEMENTS.find(a=>a.id===id).label).join('  •  ')||'¡Probá superar esto!',60,400);
+  g.fillStyle='#1e1e3a'; g.font='500 16px sans-serif'; g.fillText('Jugá en tu navegador — Batalla de Magnitudes',60,560);
+  c.toBlob(blob=>{ const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='batalla-magnitudes-valens429.png'; a.click(); });
+}
+
+function resetState(){
+  streak=0; totalCorrect=0; solvedFase3=false; bossesWon=0;
+  recentIds=[]; bossActive=false; document.body.classList.remove('boss-active');
+  el('timerPill').style.display='none'; el('streakLabel').textContent='RACHA';
+}
+function beginGame(selectedMode){
+  mode=selectedMode; resetState();
+  rngFn = mode==='daily' ? mulberry32(todaySeed()) : Math.random;
+  el('startOverlay').classList.remove('show'); el('endOverlay').classList.remove('show');
+  leftCard=DB.find(c=>c.id===12);
+  rightCard=pickCard(leftCard.id, 0, false, leftCard.valor_real);
+  setMarker(leftCard.valor_real);
+  if(mode==='timeattack'){
+    el('cardLeft').classList.remove('correct','wrong'); el('cardRight').classList.remove('correct','wrong');
+    renderLeft(leftCard); renderRightHidden(rightCard);
+    el('streakNum').textContent=0;
+    startTimeAttack();
+  } else {
+    startRound(false);
+  }
+}
+
+document.querySelectorAll('.modecard').forEach(card=>{
+  card.addEventListener('click', ()=>{ ensureAudio(); beginGame(card.dataset.mode); });
+});
+el('btnChico').addEventListener('click', ()=> mode==='timeattack' ? handleGuessTimeAttack(false) : handleGuess(false));
+el('btnGrande').addEventListener('click', ()=> mode==='timeattack' ? handleGuessTimeAttack(true) : handleGuess(true));
+el('btnRestart').addEventListener('click', ()=>{ el('endOverlay').classList.remove('show'); el('startOverlay').classList.add('show'); });
+el('btnShare').addEventListener('click', shareResult);
+el('btnHowTo').addEventListener('click', ()=> el('tutOverlay').classList.add('show'));
+el('btnCloseTut').addEventListener('click', ()=> el('tutOverlay').classList.remove('show'));
+el('btnSettings').addEventListener('click', ()=> el('settingsOverlay').classList.add('show'));
+el('btnCloseSettings').addEventListener('click', ()=> el('settingsOverlay').classList.remove('show'));
+el('btnMute').addEventListener('click', ()=>{
+  muted=!muted; el('btnMute').textContent=muted?'🔇':'🔊'; el('swSound').classList.toggle('on', !muted);
+  if(ambientGain) ambientGain.gain.value=muted?0:0.03;
+});
+el('swSound').addEventListener('click', ()=>{
+  muted=el('swSound').classList.contains('on'); el('swSound').classList.toggle('on');
+  el('btnMute').textContent=muted?'🔇':'🔊'; if(ambientGain) ambientGain.gain.value=muted?0:0.03;
+});
+el('swMotion').addEventListener('click', ()=>{
+  reducedMotion=!el('swMotion').classList.contains('on'); el('swMotion').classList.toggle('on');
+  document.body.classList.toggle('reduced', reducedMotion);
+});
+if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  reducedMotion=true; document.body.classList.add('reduced'); el('swMotion').classList.add('on');
+}
+setMarker(8.1e9);
+</script>
+</body>
+</html>

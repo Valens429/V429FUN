@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>fun.valens429 — sala de minijuegos</title>
+<title>Fun.Valens429 - MiniJuegos</title>
 <meta name="description" content="Sala de minijuegos de Valens429. Cartuchos en camino, vuelve pronto.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,7 +33,6 @@
 
   a{ color: inherit; }
 
-  /* --- textura CRT sutil, sólo decorativa --- */
   .crt-overlay{
     position: fixed;
     inset: 0;
@@ -145,10 +144,16 @@
     transition: transform 0.25s ease, box-shadow 0.25s ease;
     box-shadow: 0 10px 0 0 rgba(0,0,0,0.25), 0 18px 30px rgba(0,0,0,0.35);
     cursor: default;
+    display: block;
+    text-decoration: none;
   }
   .cartridge:hover{
     transform: rotate(0deg) translateY(-8px);
     box-shadow: 0 14px 0 0 rgba(0,0,0,0.25), 0 26px 40px rgba(0,0,0,0.4);
+  }
+  
+  a.cartridge {
+    cursor: pointer;
   }
 
   .cart-plate{
@@ -184,13 +189,15 @@
     overflow: hidden;
   }
 
-  /* paneles de color distintos por cartucho, como plástico de juguete viejo */
   .cartridge:nth-child(6n+1) .cart-body{ background: linear-gradient(160deg, #5b3a99, #432c75); }
   .cartridge:nth-child(6n+2) .cart-body{ background: linear-gradient(160deg, #b8893a, #8a6326); }
   .cartridge:nth-child(6n+3) .cart-body{ background: linear-gradient(160deg, #3f8f63, #2c6647); }
   .cartridge:nth-child(6n+4) .cart-body{ background: linear-gradient(160deg, #c25a7a, #93395a); }
   .cartridge:nth-child(6n+5) .cart-body{ background: linear-gradient(160deg, #3a7a96, #295770); }
   .cartridge:nth-child(6n+6) .cart-body{ background: linear-gradient(160deg, #8a6fc2, #5e459a); }
+
+  .cartridge.active:nth-child(6n+1) .cart-body{ background: linear-gradient(160deg, #ff416c, #ff4b2b); }
+  .cartridge.active .cart-led { background: #f4c430; box-shadow: 0 0 10px #f4c430; }
 
   .stamp{
     align-self: flex-start;
@@ -206,6 +213,16 @@
     transform: rotate(-6deg);
     background: rgba(22,11,46,0.25);
     mix-blend-mode: normal;
+    text-align: center;
+  }
+
+  .stamp.active-stamp {
+    border-color: #ffe600;
+    color: #ffe600;
+    text-shadow: 0 0 5px rgba(255, 230, 0, 0.5);
+    font-size: 0.65rem;
+    background: rgba(0,0,0,0.5);
+    transform: rotate(-4deg);
   }
 
   .pins{
@@ -261,21 +278,21 @@
 
   <main class="shelf" aria-label="Catálogo de minijuegos">
 
-    <div class="cartridge" style="--tilt: -2deg;">
+    <a href="https://fun.valens429.site/Magnitudes" class="cartridge active" style="--tilt: -2deg;">
       <div class="cart-plate"><span class="cart-code">VLX-01</span><span class="cart-led"></span></div>
       <div class="cart-body">
-        <div class="stamp">Próximamente</div>
+        <div class="stamp active-stamp">BATALLA DE<br>MAGNITUDES</div>
         <div class="pins"><span></span><span></span><span></span><span></span></div>
       </div>
-    </div>
+    </a>
 
-    <div class="cartridge" style="--tilt: 1.5deg;">
+    <a href="https://fun.valens429.site/VoxStage" class="cartridge active" style="--tilt: 1.5deg;">
       <div class="cart-plate"><span class="cart-code">VLX-02</span><span class="cart-led"></span></div>
       <div class="cart-body">
-        <div class="stamp">Próximamente</div>
+        <div class="stamp active-stamp">VOXSTAGE</div>
         <div class="pins"><span></span><span></span><span></span><span></span></div>
       </div>
-    </div>
+    </a>
 
     <div class="cartridge" style="--tilt: -1deg;">
       <div class="cart-plate"><span class="cart-code">VLX-03</span><span class="cart-led"></span></div>

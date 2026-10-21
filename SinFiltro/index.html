@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sin Filtro · Juego de preguntas</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f3ee;--card:#fff;--tx:#1d1b22;--mut:#6b6775;--bd:#e3ded5;--pri:#6d4aff;--pt:#fff;
+--c1:#2e9e6b;--c2:#d99a1a;--c3:#e4572e;--c4:#b3123f}
+:root:not([data-theme="light"]){color-scheme:light dark}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#16141c;--card:#221f2b;--tx:#f2f0f7;--mut:#a29eb0;--bd:#33303f;--pri:#8e75ff;--c1:#45c48a;--c2:#f0b43a;--c3:#ff7a50;--c4:#ff4d7e}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#16141c;--card:#221f2b;--tx:#f2f0f7;--mut:#a29eb0;--bd:#33303f;--pri:#8e75ff;--c1:#45c48a;--c2:#f0b43a;--c3:#ff7a50;--c4:#ff4d7e}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;justify-content:center}
+main{width:100%;max-width:460px;padding:20px 18px 32px}
+h1{font-size:30px;margin:8px 0 4px;letter-spacing:-.5px}
+p.sub{color:var(--mut);margin:0 0 20px;line-height:1.4}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:20px;margin-bottom:14px}
+label{font-size:13px;color:var(--mut);display:block;margin-bottom:6px}
+input[type=text]{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:16px;margin-bottom:8px}
+button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:15px 18px;font-weight:700;font-size:16px;width:100%;background:var(--pri);color:var(--pt)}
+button.alt{background:transparent;color:var(--tx);border:1px solid var(--bd)}
+button.sm{width:auto;padding:10px 14px;font-size:14px}
+button:disabled{opacity:.4;cursor:default}
+.row{display:flex;gap:10px;margin-top:10px}
+.pill{display:inline-block;padding:6px 14px;border-radius:99px;color:#fff;font-weight:800;font-size:13px;letter-spacing:.5px}
+.big{font-size:24px;line-height:1.3;font-weight:700;margin:18px 0 6px}
+.center{text-align:center}
+.score{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bd)}
+.score:last-child{border:0}
+.bar{height:6px;border-radius:9px;background:var(--bd);margin-top:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--pri)}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:13px;color:var(--mut);margin-bottom:16px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.hide{display:none}
+.emoji{font-size:64px;margin:10px 0}
+#ov{position:fixed;inset:0;z-index:50;background:var(--bg);overflow:hidden}
+#ov.hide{display:none}
+#ovin{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;gap:12px}
+#ovq{font-size:clamp(22px,5vw,44px);font-weight:800;line-height:1.2;max-width:900px}
+#ovt{font-size:clamp(44px,14vh,110px);font-weight:900;color:var(--pri);line-height:1}
+#ovin button{width:auto;padding:10px 22px;font-size:14px}
+/* ===== VIDA ===== */
+main{position:relative;z-index:1}
+.blobs{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.blobs i{position:absolute;width:55vmax;height:55vmax;border-radius:50%;filter:blur(70px);opacity:.28;animation:float 18s ease-in-out infinite alternate}
+.blobs i:nth-child(1){background:var(--c4);top:-20vmax;left:-15vmax}
+.blobs i:nth-child(2){background:var(--pri);bottom:-25vmax;right:-15vmax;animation-delay:-6s}
+.blobs i:nth-child(3){background:var(--c2);top:30%;left:40%;width:30vmax;height:30vmax;opacity:.16;animation-delay:-11s}
+@keyframes float{to{transform:translate(8vmax,6vmax) scale(1.2)}}
+main section:not(.hide){animation:enter .5s cubic-bezier(.2,.9,.3,1.25)}
+@keyframes enter{from{opacity:0;transform:translateY(22px) scale(.96)}}
+h1{font-weight:900}
+.grad{background:linear-gradient(90deg,var(--c3),var(--c4),var(--pri));-webkit-background-clip:text;background-clip:text;color:transparent}
+#who{background:linear-gradient(90deg,var(--c2),var(--c3),var(--c4));-webkit-background-clip:text;background-clip:text;color:transparent;animation:pop .7s cubic-bezier(.2,.9,.3,1.5)}
+.flame{display:inline-block;animation:flame 1.2s ease-in-out infinite alternate}
+@keyframes flame{from{transform:scale(1) rotate(-6deg)}to{transform:scale(1.18) rotate(6deg)}}
+@keyframes pop{from{transform:scale(.5);opacity:0}}
+.emoji{animation:wig 2.2s ease-in-out infinite}
+@keyframes wig{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg) translateY(-6px)}}
+.card{background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 14px 34px -16px rgba(80,40,160,.35)}
+button{background:linear-gradient(135deg,var(--pri),#ff4d7e);box-shadow:0 10px 24px -10px var(--pri);transition:transform .15s,box-shadow .15s}
+button:hover{transform:translateY(-2px)}
+button:active{transform:scale(.95)}
+button.alt{box-shadow:none;background:var(--card)}
+input[type=text]:focus{outline:2px solid var(--pri);border-color:transparent}
+.legend span{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:9px 10px;font-weight:800;color:var(--tx)}
+.dot{width:12px;height:12px;box-shadow:0 0 10px currentColor}
+.score span{display:flex;align-items:center}
+.av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:14px;margin-right:10px}
+.score small{color:var(--mut);font-weight:600}
+.bar{height:9px}
+.bar i{width:var(--w);background:linear-gradient(90deg,var(--pri),#ff4d7e);border-radius:9px;animation:grow .9s cubic-bezier(.2,.9,.3,1)}
+@keyframes grow{from{width:0}}
+#q{background:var(--card);border:2px solid var(--cc,var(--bd));border-radius:28px;padding:28px 20px;box-shadow:0 0 0 6px color-mix(in srgb,var(--cc,transparent) 18%,transparent),0 24px 50px -22px var(--cc,#000)}
+#q .pill{box-shadow:0 0 18px var(--cc);animation:pulse 1.4s ease-in-out infinite alternate}
+#q .big{font-size:26px;animation:pop .6s .15s both cubic-bezier(.2,.9,.3,1.4)}
+@keyframes pulse{to{transform:scale(1.08)}}
+#ov{background:radial-gradient(circle at 75% 50%,color-mix(in srgb,var(--cc,var(--pri)) 38%,var(--bg)),var(--bg) 72%)}
+#ovin{display:grid;grid-template-columns:1fr auto;grid-template-areas:"c r" "q r" "b r";align-content:center;justify-items:start;column-gap:calc(var(--u,300px)*.08);row-gap:14px;text-align:left;padding:0 6%}
+#ovcat{grid-area:c;align-self:end;box-shadow:0 0 18px var(--cc)}
+#ovq{grid-area:q;font-size:clamp(20px,calc(var(--u,300px)*.095),44px)}
+#ovdone{grid-area:b;align-self:start}
+#ring{grid-area:r;position:relative;width:calc(var(--u,300px)*.55);height:calc(var(--u,300px)*.55)}
+#ring svg{width:100%;height:100%;transform:rotate(-90deg);overflow:visible}
+#ring circle{fill:none;stroke-width:9;stroke-linecap:round}
+.rb{stroke:var(--bd)}
+.rf{stroke:var(--cc,var(--pri));stroke-dasharray:339.3;stroke-dashoffset:339.3;transition:stroke-dashoffset 1s linear,stroke .3s;filter:drop-shadow(0 0 6px var(--cc,var(--pri)))}
+#ring #ovt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:calc(var(--u,300px)*.22);color:var(--tx)}
+#ov.urgent .rf{stroke:var(--c4)}
+#ov.urgent #ovt{color:var(--c4);animation:pulse .5s ease-in-out infinite alternate}
+.cf{position:fixed;top:-20px;width:10px;height:16px;border-radius:2px;z-index:99;animation:fall 3s linear forwards;pointer-events:none}
+@keyframes fall{to{top:105vh;transform:rotate(900deg)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="blobs"><i></i><i></i><i></i></div>
+<main>
+
+<section id="setup">
+  <h1><span class="flame">🔥</span> <span class="grad">Sin Filtro</span></h1>
+  <p class="sub">Pasen el celu, vean su pregunta en secreto y decidan: ¿responder y sumar, o pasar y salvarse? Solo mayores de 18.</p>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--c1)"></i>Soft · +1</span>
+    <span><i class="dot" style="background:var(--c2)"></i>Mid · +2</span>
+    <span><i class="dot" style="background:var(--c3)"></i>Hard · +3</span>
+    <span><i class="dot" style="background:var(--c4)"></i>Extreme · +4</span>
+  </div>
+  <div class="card">
+    <label>Jugadores (mínimo 2)</label>
+    <div id="names"></div>
+    <button class="alt sm" id="addP">+ Agregar jugador</button>
+  </div>
+  <div class="card">
+    <label>Puntos para ganar</label>
+    <input type="text" id="goal" value="30" inputmode="numeric">
+    <div style="font-size:13px;color:var(--mut)">Sugerido: 30 para pocos jugadores, 20 si son muchos.</div>
+  </div>
+  <button id="start">Empezar partida</button>
+</section>
+
+<section id="pass" class="hide center">
+  <div class="emoji">📱</div>
+  <p class="sub">Pásale el celu a</p>
+  <h1 id="who" style="font-size:38px"></h1>
+  <p class="sub" id="pts"></p>
+  <div class="card" id="board"></div>
+  <button id="see">Ver mi pregunta (en secreto)</button>
+</section>
+
+<section id="q" class="hide center">
+  <span class="pill" id="cat"></span>
+  <div class="big" id="qtext"></div>
+  <p class="sub" id="worth"></p>
+  <div class="row">
+    <button class="alt" id="skip">Pasar</button>
+    <button id="ans">Responder</button>
+  </div>
+  <p class="sub" style="margin-top:14px;font-size:13px">Si respondes, la pregunta se muestra a todos en horizontal: deja el celu en la mesa y tendrás 20 segundos para contarlo. Si pasas, no sumas y sigue el siguiente.</p>
+</section>
+
+<section id="end" class="hide center">
+  <div class="emoji">🏆</div>
+  <h1 id="winner"></h1>
+  <p class="sub">¡Llegó a la meta!</p>
+  <div class="card" id="final"></div>
+  <button id="again">Jugar otra vez</button>
+</section>
+
+<section id="judge" class="hide center">
+  <div class="emoji">🤔</div>
+  <h1>¿Cumpliste?</h1>
+  <p class="sub" id="jq"></p>
+  <p class="sub">Decidan entre todos si de verdad respondió.</p>
+  <div class="row"><button class="alt" id="no">No cumplió</button><button id="yes">Sí, cumplió</button></div>
+</section>
+
+</main>
+
+<div id="ov" class="hide"><div id="ovin">
+  <span class="pill" id="ovcat"></span>
+  <div id="ovq"></div>
+  <div id="ring"><svg viewBox="0 0 120 120"><circle class="rb" cx="60" cy="60" r="54"/><circle class="rf" id="rf" cx="60" cy="60" r="54"/></svg><div id="ovt"></div></div>
+  <button class="alt" id="ovdone">Ya terminé</button>
+</div></div>
+
+<script>
+const CATS=[
+{n:"SOFT",p:1,c:"var(--c1)",q:[
+"¿Cuál es tu miedo más irracional?","¿Cuál fue tu peor corte de pelo?","¿Qué canción te da vergüenza admitir que te gusta?","¿Cuál fue la mentira más tonta que dijiste de niño?","¿Qué app tienes en el celular que nadie sabe?","¿Cuál fue tu peor cita o salida?","¿Qué hábito raro tienes cuando estás solo?","¿A qué famoso le tuviste un crush de adolescente?","¿Qué fue lo más vergonzoso que te pasó en la escuela?","¿Qué apodo odiabas de chico?","¿Qué película o serie te hizo llorar y nunca lo admitiste?","¿Cuál es tu mayor manía?"]},
+{n:"MID",p:2,c:"var(--c2)",q:[
+"¿A quién de los presentes le darías la contraseña de tu celular?","¿Cuál fue tu mayor mentira a una pareja o ex?","¿Quién de los presentes miente mejor?","¿Stalkeaste alguna vez a tu ex? ¿Por cuánto tiempo?","¿Qué es lo más caro que rompiste sin confesarlo?","¿Cuál es el chat más vergonzoso de tu celular?","¿Fingiste alguna vez estar enfermo para evitar a alguien?","¿Qué es lo peor que dijiste de alguien de esta sala a sus espaldas?","¿Cuál fue tu beso más incómodo?","¿Quién te dejó en visto y aún te duele?","¿De quién de los presentes tendrías celos?","¿Qué harías si fueras invisible por un día?"]},
+{n:"HARD",p:3,c:"var(--c3)",q:[
+"¿Con quién de los presentes saldrías en una cita si tuvieras que elegir?","¿Cuál es tu mayor secreto que nadie acá conoce?","¿Alguna vez fuiste infiel o estuviste muy tentado?","¿Qué es lo más atrevido que hiciste en público?","¿Cuál es tu mayor arrepentimiento amoroso?","¿A quién de los presentes besarías si fuera obligatorio?","¿Qué es lo más loco que hiciste estando borracho?","¿Qué cosa rara te da vergüenza admitir que te gusta?","¿Con cuántas personas te has besado? Sé honesto.","¿Te enamoraste alguna vez de alguien que estaba en pareja?","¿Qué foto tuya borrarías de internet ahora mismo?","¿Cuál es lo peor que hiciste por venganza?"]},
+{n:"EXTREME",p:4,c:"var(--c4)",q:[
+"¿Cuál es lo más prohibido que hiciste y nadie sabe?","¿Con quién de los presentes tendrías una noche loca?","¿Cuál fue tu peor traición a un amigo?","Lee en voz alta tu último chat con tu crush.","¿Qué es lo más sucio que pensaste de alguien de esta sala?","¿Cuál es tu deseo más oculto en pareja?","¿Mandaste alguna vez una foto comprometedora? ¿A quién?","¿Qué harías por un millón de dólares que te daría mucha vergüenza?","¿Quién de la sala te parece más atractivo y quién menos?","¿Cuál es la mentira más grande que sigues sosteniendo?","¿Qué es lo peor que hiciste en una relación?","¿Cuál es el momento más íntimo que tuviste en un lugar inapropiado?"]}
+];
+const $=id=>document.getElementById(id);
+let players=[],idx=0,goal=30,decks=[],cur=null;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+function show(id){["setup","pass","q","judge","end"].forEach(s=>$(s).classList.toggle("hide",s!==id));window.scrollTo(0,0)}
+function nameInputs(n){const box=$("names");const old=[...box.querySelectorAll("input")].map(i=>i.value);box.innerHTML="";
+ for(let i=0;i<n;i++){const e=document.createElement("input");e.type="text";e.placeholder="Jugador "+(i+1);e.value=old[i]||"";box.appendChild(e)}}
+nameInputs(3);
+$("addP").onclick=()=>nameInputs($("names").children.length+1);
+function board(el){el.innerHTML=players.map((p,i)=>({p,i})).sort((a,b)=>b.p.score-a.p.score).map(({p,i},k)=>
+ `<div><div class="score"><span><b class="av" style="background:hsl(${i*67+250} 70% 55%)">${esc(p.name[0].toUpperCase())}</b>${esc(p.name)}${k==0&&p.score>0?" 👑":""}</span><b>${p.score}<small> / ${goal}</small></b></div><div class="bar"><i style="--w:${Math.min(100,p.score/Math.max(goal,1)*100)}%"></i></div></div>`).join("")}
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+$("start").onclick=()=>{
+ const ns=[...$("names").querySelectorAll("input")].map((i,k)=>i.value.trim()||"Jugador "+(k+1));
+ if(ns.length<2){alert("Se necesitan al menos 2 jugadores");return}
+ goal=Math.max(1,parseInt($("goal").value)||30);
+ players=ns.map(n=>({name:n,score:0}));idx=0;decks=CATS.map(()=>[]);turn()};
+function turn(){const p=players[idx];$("who").textContent=p.name;$("pts").textContent="Tienes "+p.score+" puntos";board($("board"));show("pass")}
+$("see").onclick=()=>{
+ const ci=Math.random()*CATS.length|0;
+ if(!decks[ci].length)decks[ci]=shuffle(CATS[ci].q);
+ cur={c:CATS[ci],t:decks[ci].pop()};
+ const pill=$("cat");pill.textContent=cur.c.n;pill.style.background=cur.c.c;$("q").style.setProperty("--cc",cur.c.c);
+ $("qtext").textContent=cur.t;$("worth").textContent="Vale +"+cur.c.p+(cur.c.p>1?" puntos":" punto");
+ $("ans").textContent="Responder (+"+cur.c.p+")";show("q")};
+function next(){idx=(idx+1)%players.length;turn()}
+$("skip").onclick=next;
+let tmr=null;
+function layoutOv(){const o=$("ov"),i=$("ovin");if(o.classList.contains("hide"))return;o.style.setProperty("--u",Math.min(innerWidth,innerHeight)+"px");
+ if(innerHeight>innerWidth){i.style.cssText=`position:absolute;width:${innerHeight}px;height:${innerWidth}px;top:50%;left:50%;transform:translate(-50%,-50%) rotate(90deg)`}else i.style.cssText=""}
+addEventListener("resize",layoutOv);
+async function goFull(){try{await document.documentElement.requestFullscreen();await screen.orientation.lock("landscape")}catch(e){}}
+function leaveFull(){try{screen.orientation.unlock()}catch(e){}try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}}
+$("ans").onclick=()=>{
+ $("ovcat").textContent=cur.c.n+" · +"+cur.c.p;$("ovcat").style.background=cur.c.c;$("ov").style.setProperty("--cc",cur.c.c);$("ovq").textContent=cur.t;
+ $("ov").classList.remove("hide");layoutOv();goFull();
+ let n=3,t=20,phase=0;$("ovt").textContent="3";$("ov").classList.remove("urgent");$("rf").style.transition="none";$("rf").style.strokeDashoffset=339.3;void $("rf").getBoundingClientRect();$("rf").style.transition="";
+ clearInterval(tmr);
+ tmr=setInterval(()=>{
+  if(phase==0){n--;if(n>0)$("ovt").textContent=n;else{phase=1;$("ovt").textContent=t;$("rf").style.strokeDashoffset=0}}
+  else{t--;$("ovt").textContent=t;$("rf").style.strokeDashoffset=339.3*(1-t/20);$("ov").classList.toggle("urgent",t<=5);if(t<=0)endShow()}
+ },1000)};
+function endShow(){clearInterval(tmr);try{navigator.vibrate&&navigator.vibrate(300)}catch(e){}
+ $("ov").classList.add("hide");leaveFull();$("jq").textContent=cur.t;show("judge")}
+$("ovdone").onclick=endShow;
+$("no").onclick=next;
+$("yes").onclick=()=>{const p=players[idx];p.score+=cur.c.p;
+ if(p.score>=goal){$("winner").textContent=p.name;board($("final"));show("end");confetti()}else next()};
+function confetti(){const cs=["#ff4d7e","#f0b43a","#45c48a","#8e75ff","#ff7a50"];for(let i=0;i<70;i++){const e=document.createElement("i");e.className="cf";e.style.cssText=`left:${Math.random()*100}vw;background:${cs[i%5]};animation-delay:${Math.random()*.8}s;animation-duration:${2+Math.random()*2}s`;document.body.appendChild(e);setTimeout(()=>e.remove(),5000)}}
+$("again").onclick=()=>show("setup");
+</script>
+</body>
+</html>

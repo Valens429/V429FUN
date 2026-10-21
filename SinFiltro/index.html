@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" translate="no">
 <head>
 <meta charset="utf-8">
+<meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Sin Filtro 路 Juego de preguntas</title>
+<title>Sin Filtro &#183; Juego de preguntas</title>
 <style>
 :root{box-sizing:border-box;
 --bg:#f6f3ee;--card:#fff;--tx:#1d1b22;--mut:#6b6775;--bd:#e3ded5;--pri:#6d4aff;--pt:#fff;
@@ -116,6 +117,14 @@ textarea,select{width:100%;padding:12px;border-radius:12px;border:1px solid var(
 #toast.show{animation:toast 3s ease forwards}
 @keyframes toast{10%,85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,0)}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+.blobs i{filter:none;opacity:.4}
+.blobs i:nth-child(1){background:radial-gradient(circle,var(--c4),transparent 68%)}
+.blobs i:nth-child(2){background:radial-gradient(circle,var(--pri),transparent 68%)}
+.blobs i:nth-child(3){background:radial-gradient(circle,var(--c2),transparent 68%);opacity:.25}
+body::before,body::after{content:"";position:fixed;left:0;right:0;z-index:10;pointer-events:none;background:color-mix(in srgb,var(--bg) 75%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+body::before{top:0;height:env(safe-area-inset-top,0px)}
+body::after{bottom:0;height:env(safe-area-inset-bottom,0px)}
 </style>
 </head>
 <body>
@@ -123,16 +132,16 @@ textarea,select{width:100%;padding:12px;border-radius:12px;border:1px solid var(
 <main>
 
 <section id="setup">
-  <h1><span class="flame">馃敟</span> <span class="grad">Sin Filtro</span></h1>
-  <p class="sub">Pasen el celu, vean su pregunta en secreto y decidan: 驴responder y sumar, o pasar y salvarse? Solo mayores de 18.</p>
+  <h1><span class="flame">&#128293;</span> <span class="grad">Sin Filtro</span></h1>
+  <p class="sub">Pasen el celu, vean su pregunta en secreto y decidan: &#191;responder y sumar, o pasar y salvarse? Solo mayores de 18.</p>
   <div class="legend">
-    <span><i class="dot" style="background:var(--c1)"></i>Soft 路 +1</span>
-    <span><i class="dot" style="background:var(--c2)"></i>Mid 路 +2</span>
-    <span><i class="dot" style="background:var(--c3)"></i>Hard 路 +3</span>
-    <span><i class="dot" style="background:var(--c4)"></i>Extreme 路 +4</span>
+    <span><i class="dot" style="background:var(--c1)"></i>Soft &#183; +1</span>
+    <span><i class="dot" style="background:var(--c2)"></i>Mid &#183; +2</span>
+    <span><i class="dot" style="background:var(--c3)"></i>Hard &#183; +3</span>
+    <span><i class="dot" style="background:var(--c4)"></i>Extreme &#183; +4</span>
   </div>
   <div class="card">
-    <label>Jugadores (m铆nimo 2)</label>
+    <label>Jugadores (m&#237;nimo 2)</label>
     <div id="names"></div>
     <button class="alt sm" id="addP">+ Agregar jugador</button>
   </div>
@@ -141,26 +150,26 @@ textarea,select{width:100%;padding:12px;border-radius:12px;border:1px solid var(
     <input type="text" id="goal" value="30" inputmode="numeric">
     <div style="font-size:13px;color:var(--mut)">Sugerido: 30 para pocos jugadores, 20 si son muchos.</div>
   </div>
-  <button class="alt" id="openCfg" style="margin-bottom:12px">鈿欙笍 Personalizar partida</button>
+  <button class="alt" id="openCfg" style="margin-bottom:12px">&#9881;&#65039; Personalizar partida</button>
   <button id="start">Empezar partida</button>
 </section>
 
 <section id="cfg" class="hide">
-  <h1>鈿欙笍 Personalizar</h1>
+  <h1>&#9881;&#65039; Personalizar</h1>
   <p class="sub">Ajusta la partida a tu gusto. Se aplica al volver y empezar.</p>
-<div class="card"><label>Categor铆as en juego</label><div id="catChips"></div>
+<div class="card"><label>Categor&#237;as en juego</label><div id="catChips"></div>
 <label style="margin-top:12px">Reglas</label><div id="opts"></div></div>
-<div class="card"><label>Puntos y segundos por categor铆a</label><div id="tune"></div><div id="penw"><label>驴Cu谩ntos puntos resta?</label><input type="text" id="penv" value="1" inputmode="numeric"></div><label>Segundos de preparaci贸n antes de contar</label><input type="text" id="prepv" value="3" inputmode="numeric"></div>
-<div class="card"><details id="bank"><summary>馃摑 Banco de preguntas</summary>
+<div class="card"><label>Puntos y segundos por categor&#237;a</label><div id="tune"></div><div id="penw"><label>&#191;Cu&#225;ntos puntos resta?</label><input type="text" id="penv" value="1" inputmode="numeric"></div><label>Segundos de preparaci&#243;n antes de contar</label><input type="text" id="prepv" value="3" inputmode="numeric"></div>
+<div class="card"><details id="bank"><summary>&#128221; Banco de preguntas</summary>
 <div id="addbox"><input type="text" id="nq" placeholder="Escribe una pregunta nueva..."><button class="sm" id="nqb">Agregar</button><div id="nqc"></div></div>
 <div id="qlists"></div>
 <button class="alt sm" id="qreset" style="margin-top:12px">Restaurar originales</button></details></div>
-  <button id="back">Listo 鉁?/button>
+  <button id="back">Listo &#10004;</button>
 </section>
 
 <section id="pass" class="hide center">
-  <div class="emoji">馃摫</div>
-  <p class="sub">P谩sale el celu a</p>
+  <div class="emoji">&#128241;</div>
+  <p class="sub">P&#225;sale el celu a</p>
   <h1 id="who" style="font-size:38px"></h1>
   <p class="sub" id="pts"></p>
   <div class="card" id="board"></div>
@@ -175,24 +184,24 @@ textarea,select{width:100%;padding:12px;border-radius:12px;border:1px solid var(
     <button class="alt" id="skip">Pasar</button>
     <button id="ans">Responder</button>
   </div>
-  <p class="sub" style="margin-top:14px;font-size:13px">Si respondes, la pregunta se muestra a todos en horizontal: deja el celu en la mesa y tendr谩s 20 segundos para contarlo. Si pasas, no sumas y sigue el siguiente.</p>
+  <p class="sub" style="margin-top:14px;font-size:13px">Si respondes, la pregunta se muestra a todos en horizontal: deja el celu en la mesa y tendr&#225;s 20 segundos para contarlo. Si pasas, no sumas y sigue el siguiente.</p>
 </section>
 
 <section id="end" class="hide center">
-  <div class="emoji">馃弳</div>
+  <div class="emoji">&#127942;</div>
   <h1 id="winner"></h1>
-  <p class="sub">隆Lleg贸 a la meta!</p>
+  <p class="sub">&#161;Lleg&#243; a la meta!</p>
   <div class="card" id="final"></div>
-  <button id="rev">馃攣 Revancha</button>
+  <button id="rev">&#128257; Revancha</button>
   <button class="alt" id="again" style="margin-top:10px">Cambiar jugadores</button>
 </section>
 
 <section id="judge" class="hide center">
-  <div class="emoji">馃</div>
-  <h1>驴Cumpliste?</h1>
+  <div class="emoji">&#129300;</div>
+  <h1>&#191;Cumpliste?</h1>
   <p class="sub" id="jq"></p>
-  <p class="sub">Decidan entre todos si de verdad respondi贸.</p>
-  <div class="row"><button class="alt" id="no">No cumpli贸</button><button id="yes">S铆, cumpli贸</button></div>
+  <p class="sub">Decidan entre todos si de verdad respondi&#243;.</p>
+  <div class="row"><button class="alt" id="no">No cumpli&#243;</button><button id="yes">S&#237;, cumpli&#243;</button></div>
 </section>
 
 </main>
@@ -202,21 +211,21 @@ textarea,select{width:100%;padding:12px;border-radius:12px;border:1px solid var(
   <span class="pill" id="ovcat"></span>
   <div id="ovq"></div>
   <div id="ring"><svg viewBox="0 0 120 120"><circle class="rb" cx="60" cy="60" r="54"/><circle class="rf" id="rf" cx="60" cy="60" r="54"/></svg><div id="ovt"></div></div>
-  <button class="alt" id="ovdone">Ya termin茅</button>
+  <button class="alt" id="ovdone">Ya termin&#233;</button>
 </div></div>
 
 <script>
 const CATS=[
 {n:"SOFT",p:1,c:"var(--c1)",q:[
-"驴Cu谩l es tu miedo m谩s irracional?","驴Cu谩l fue tu peor corte de pelo?","驴Qu茅 canci贸n te da verg眉enza admitir que te gusta?","驴Cu谩l fue la mentira m谩s tonta que dijiste de ni帽o?","驴Qu茅 app tienes en el celular que nadie sabe?","驴Cu谩l fue tu peor cita o salida?","驴Qu茅 h谩bito raro tienes cuando est谩s solo?","驴A qu茅 famoso le tuviste un crush de adolescente?","驴Qu茅 fue lo m谩s vergonzoso que te pas贸 en la escuela?","驴Qu茅 apodo odiabas de chico?","驴Qu茅 pel铆cula o serie te hizo llorar y nunca lo admitiste?","驴Cu谩l es tu mayor man铆a?"]},
+"\u00bfCu\u00e1l es tu miedo m\u00e1s irracional?","\u00bfCu\u00e1l fue tu peor corte de pelo?","\u00bfQu\u00e9 canci\u00f3n te da verg\u00fcenza admitir que te gusta?","\u00bfCu\u00e1l fue la mentira m\u00e1s tonta que dijiste de ni\u00f1o?","\u00bfQu\u00e9 app tienes en el celular que nadie sabe?","\u00bfCu\u00e1l fue tu peor cita o salida?","\u00bfQu\u00e9 h\u00e1bito raro tienes cuando est\u00e1s solo?","\u00bfA qu\u00e9 famoso le tuviste un crush de adolescente?","\u00bfQu\u00e9 fue lo m\u00e1s vergonzoso que te pas\u00f3 en la escuela?","\u00bfQu\u00e9 apodo odiabas de chico?","\u00bfQu\u00e9 pel\u00edcula o serie te hizo llorar y nunca lo admitiste?","\u00bfCu\u00e1l es tu mayor man\u00eda?"]},
 {n:"MID",p:2,c:"var(--c2)",q:[
-"驴A qui茅n de los presentes le dar铆as la contrase帽a de tu celular?","驴Cu谩l fue tu mayor mentira a una pareja o ex?","驴Qui茅n de los presentes miente mejor?","驴Stalkeaste alguna vez a tu ex? 驴Por cu谩nto tiempo?","驴Qu茅 es lo m谩s caro que rompiste sin confesarlo?","驴Cu谩l es el chat m谩s vergonzoso de tu celular?","驴Fingiste alguna vez estar enfermo para evitar a alguien?","驴Qu茅 es lo peor que dijiste de alguien de esta sala a sus espaldas?","驴Cu谩l fue tu beso m谩s inc贸modo?","驴Qui茅n te dej贸 en visto y a煤n te duele?","驴De qui茅n de los presentes tendr铆as celos?","驴Qu茅 har铆as si fueras invisible por un d铆a?"]},
+"\u00bfA qui\u00e9n de los presentes le dar\u00edas la contrase\u00f1a de tu celular?","\u00bfCu\u00e1l fue tu mayor mentira a una pareja o ex?","\u00bfQui\u00e9n de los presentes miente mejor?","\u00bfStalkeaste alguna vez a tu ex? \u00bfPor cu\u00e1nto tiempo?","\u00bfQu\u00e9 es lo m\u00e1s caro que rompiste sin confesarlo?","\u00bfCu\u00e1l es el chat m\u00e1s vergonzoso de tu celular?","\u00bfFingiste alguna vez estar enfermo para evitar a alguien?","\u00bfQu\u00e9 es lo peor que dijiste de alguien de esta sala a sus espaldas?","\u00bfCu\u00e1l fue tu beso m\u00e1s inc\u00f3modo?","\u00bfQui\u00e9n te dej\u00f3 en visto y a\u00fan te duele?","\u00bfDe qui\u00e9n de los presentes tendr\u00edas celos?","\u00bfQu\u00e9 har\u00edas si fueras invisible por un d\u00eda?"]},
 {n:"HARD",p:3,c:"var(--c3)",q:[
-"驴Con qui茅n de los presentes saldr铆as en una cita si tuvieras que elegir?","驴Cu谩l es tu mayor secreto que nadie ac谩 conoce?","驴Alguna vez fuiste infiel o estuviste muy tentado?","驴Qu茅 es lo m谩s atrevido que hiciste en p煤blico?","驴Cu谩l es tu mayor arrepentimiento amoroso?","驴A qui茅n de los presentes besar铆as si fuera obligatorio?","驴Qu茅 es lo m谩s loco que hiciste estando borracho?","驴Qu茅 cosa rara te da verg眉enza admitir que te gusta?","驴Con cu谩ntas personas te has besado? S茅 honesto.","驴Te enamoraste alguna vez de alguien que estaba en pareja?","驴Qu茅 foto tuya borrar铆as de internet ahora mismo?","驴Cu谩l es lo peor que hiciste por venganza?"]},
+"\u00bfCon qui\u00e9n de los presentes saldr\u00edas en una cita si tuvieras que elegir?","\u00bfCu\u00e1l es tu mayor secreto que nadie ac\u00e1 conoce?","\u00bfAlguna vez fuiste infiel o estuviste muy tentado?","\u00bfQu\u00e9 es lo m\u00e1s atrevido que hiciste en p\u00fablico?","\u00bfCu\u00e1l es tu mayor arrepentimiento amoroso?","\u00bfA qui\u00e9n de los presentes besar\u00edas si fuera obligatorio?","\u00bfQu\u00e9 es lo m\u00e1s loco que hiciste estando borracho?","\u00bfQu\u00e9 cosa rara te da verg\u00fcenza admitir que te gusta?","\u00bfCon cu\u00e1ntas personas te has besado? S\u00e9 honesto.","\u00bfTe enamoraste alguna vez de alguien que estaba en pareja?","\u00bfQu\u00e9 foto tuya borrar\u00edas de internet ahora mismo?","\u00bfCu\u00e1l es lo peor que hiciste por venganza?"]},
 {n:"EXTREME",p:4,c:"var(--c4)",q:[
-"驴Cu谩l es lo m谩s prohibido que hiciste y nadie sabe?","驴Con qui茅n de los presentes tendr铆as una noche loca?","驴Cu谩l fue tu peor traici贸n a un amigo?","Lee en voz alta tu 煤ltimo chat con tu crush.","驴Qu茅 es lo m谩s sucio que pensaste de alguien de esta sala?","驴Cu谩l es tu deseo m谩s oculto en pareja?","驴Mandaste alguna vez una foto comprometedora? 驴A qui茅n?","驴Qu茅 har铆as por un mill贸n de d贸lares que te dar铆a mucha verg眉enza?","驴Qui茅n de la sala te parece m谩s atractivo y qui茅n menos?","驴Cu谩l es la mentira m谩s grande que sigues sosteniendo?","驴Qu茅 es lo peor que hiciste en una relaci贸n?","驴Cu谩l es el momento m谩s 铆ntimo que tuviste en un lugar inapropiado?"]}
+"\u00bfCu\u00e1l es lo m\u00e1s prohibido que hiciste y nadie sabe?","\u00bfCon qui\u00e9n de los presentes tendr\u00edas una noche loca?","\u00bfCu\u00e1l fue tu peor traici\u00f3n a un amigo?","Lee en voz alta tu \u00faltimo chat con tu crush.","\u00bfQu\u00e9 es lo m\u00e1s sucio que pensaste de alguien de esta sala?","\u00bfCu\u00e1l es tu deseo m\u00e1s oculto en pareja?","\u00bfMandaste alguna vez una foto comprometedora? \u00bfA qui\u00e9n?","\u00bfQu\u00e9 har\u00edas por un mill\u00f3n de d\u00f3lares que te dar\u00eda mucha verg\u00fcenza?","\u00bfQui\u00e9n de la sala te parece m\u00e1s atractivo y qui\u00e9n menos?","\u00bfCu\u00e1l es la mentira m\u00e1s grande que sigues sosteniendo?","\u00bfQu\u00e9 es lo peor que hiciste en una relaci\u00f3n?","\u00bfCu\u00e1l es el momento m\u00e1s \u00edntimo que tuviste en un lugar inapropiado?"]}
 ];
-const MORE=[["驴Cu谩l es el peor regalo que recibiste?","驴Qu茅 comida te da asco y a todos les encanta?","驴Cu谩l es tu talento m谩s in煤til?","驴Qu茅 cosa infantil sigues haciendo de adulto?","驴Cu谩l fue tu peor verg眉enza en redes sociales?","驴Qu茅 mensaje mandaste al chat equivocado?","驴Cu谩l es tu peor h谩bito con el celular?","驴Qu茅 mentira piadosa dices todo el tiempo?"],["驴Qu茅 es lo m谩s raro que googleaste?","驴A qui茅n de la sala bloquear铆as en redes por un mes?","驴Cu谩l es tu red flag m谩s grande?","驴Qu茅 le robaste a alguien alguna vez?","驴Con qu茅 ex volver铆as?","驴Cu谩l fue tu peor mentira en una entrevista?","驴Qu茅 tan seguido revisas el celular de tu pareja?","驴Qu茅 secreto de un amigo contaste sin querer?"],["驴Qu茅 es lo m谩s raro que hiciste por un crush?","驴A qui茅n le hiciste ghosting y por qu茅?","驴Te gust贸 alguna vez la pareja de un amigo?","驴Qu茅 pasar铆a si todos leyeran tu historial de b煤squeda?","驴Cu谩l es tu mayor inseguridad f铆sica?","驴Qui茅n de la sala ser铆a el peor en pareja?","驴Cu谩l fue tu peor borrachera y qu茅 hiciste?","驴Mentiste sobre tu edad o trabajo para impresionar?"],["驴Qu茅 es lo m谩s vergonzoso que te pas贸 en la intimidad?","驴A qui茅n de la sala le har铆as una confesi贸n de amor?","驴Cu谩l es tu fantas铆a m谩s loca?","驴Dejar铆as que el grupo lea tus 煤ltimos 5 chats?","驴Qu茅 es lo m谩s bajo que hiciste por dinero?","驴Con qui茅n de la sala nunca te besar铆as y por qu茅?","驴Qu茅 es lo m谩s cruel que le dijiste a alguien?","驴Qu茅 har铆as si nadie se enterara jam谩s?"]];
+const MORE=[["\u00bfCu\u00e1l es el peor regalo que recibiste?","\u00bfQu\u00e9 comida te da asco y a todos les encanta?","\u00bfCu\u00e1l es tu talento m\u00e1s in\u00fatil?","\u00bfQu\u00e9 cosa infantil sigues haciendo de adulto?","\u00bfCu\u00e1l fue tu peor verg\u00fcenza en redes sociales?","\u00bfQu\u00e9 mensaje mandaste al chat equivocado?","\u00bfCu\u00e1l es tu peor h\u00e1bito con el celular?","\u00bfQu\u00e9 mentira piadosa dices todo el tiempo?"],["\u00bfQu\u00e9 es lo m\u00e1s raro que googleaste?","\u00bfA qui\u00e9n de la sala bloquear\u00edas en redes por un mes?","\u00bfCu\u00e1l es tu red flag m\u00e1s grande?","\u00bfQu\u00e9 le robaste a alguien alguna vez?","\u00bfCon qu\u00e9 ex volver\u00edas?","\u00bfCu\u00e1l fue tu peor mentira en una entrevista?","\u00bfQu\u00e9 tan seguido revisas el celular de tu pareja?","\u00bfQu\u00e9 secreto de un amigo contaste sin querer?"],["\u00bfQu\u00e9 es lo m\u00e1s raro que hiciste por un crush?","\u00bfA qui\u00e9n le hiciste ghosting y por qu\u00e9?","\u00bfTe gust\u00f3 alguna vez la pareja de un amigo?","\u00bfQu\u00e9 pasar\u00eda si todos leyeran tu historial de b\u00fasqueda?","\u00bfCu\u00e1l es tu mayor inseguridad f\u00edsica?","\u00bfQui\u00e9n de la sala ser\u00eda el peor en pareja?","\u00bfCu\u00e1l fue tu peor borrachera y qu\u00e9 hiciste?","\u00bfMentiste sobre tu edad o trabajo para impresionar?"],["\u00bfQu\u00e9 es lo m\u00e1s vergonzoso que te pas\u00f3 en la intimidad?","\u00bfA qui\u00e9n de la sala le har\u00edas una confesi\u00f3n de amor?","\u00bfCu\u00e1l es tu fantas\u00eda m\u00e1s loca?","\u00bfDejar\u00edas que el grupo lea tus \u00faltimos 5 chats?","\u00bfQu\u00e9 es lo m\u00e1s bajo que hiciste por dinero?","\u00bfCon qui\u00e9n de la sala nunca te besar\u00edas y por qu\u00e9?","\u00bfQu\u00e9 es lo m\u00e1s cruel que le dijiste a alguien?","\u00bfQu\u00e9 har\u00edas si nadie se enterara jam\u00e1s?"]];
 CATS.forEach((c,i)=>c.q.push(...MORE[i]));
 const $=id=>document.getElementById(id);
 let players=[],idx=0,goal=30,decks=[],cur=null;
@@ -230,7 +239,7 @@ const SV=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 const saved=LS("sf_names");nameInputs(saved&&saved.length?saved.length:3);
 if(saved)[...$("names").children].forEach((e,i)=>e.value=saved[i]||"");
 if(LS("sf_custom"))custom=LS("sf_custom");
-const OP=[["pen","Pasar resta puntos"],["round","Terminar la ronda antes de ganar"],["snd","Sonidos y vibraci贸n"]];
+const OP=[["pen","Pasar resta puntos"],["round","Terminar la ronda antes de ganar"],["snd","Sonidos y vibraci\u00f3n"]];
 $("opts").innerHTML=OP.map(([k,t])=>`<label class="tg"><input type="checkbox" data-k="${k}" checked>${t}</label>`).join("");
 $("opts").onchange=e=>{cfg[e.target.dataset.k]=e.target.checked?1:0;syncCfg()};
 $("catChips").innerHTML=CATS.map((c,i)=>`<span class="chip on" data-i="${i}" style="--cc:${c.c}">${c.n}</span>`).join("");
@@ -241,10 +250,10 @@ const ORIG=CATS.map(c=>c.q.slice()),OPEN=[0,0,0,0];
 const sb=LS("sf_bank");if(sb)CATS.forEach((c,i)=>{if(sb[i]&&sb[i].length)c.q=sb[i]});
 if(custom.some(a=>a.length)){custom.forEach((a,i)=>CATS[i].q.unshift(...a));custom=[[],[],[],[]];SV("sf_custom",custom)}
 const saveBank=()=>SV("sf_bank",CATS.map(c=>c.q));
-function renderBank(){$("qlists").innerHTML=CATS.map((c,i)=>`<details class="qc" data-i="${i}"${OPEN[i]?" open":""}><summary><span class="pill" style="background:${c.c}">${c.n}</span>${c.q.length} preguntas</summary>${c.q.map((t,j)=>`<div class="qr"><span>${esc(t)}</span><b class="del" data-i="${i}" data-j="${j}">馃棏</b></div>`).join("")}</details>`).join("")}
+function renderBank(){$("qlists").innerHTML=CATS.map((c,i)=>`<details class="qc" data-i="${i}"${OPEN[i]?" open":""}><summary><span class="pill" style="background:${c.c}">${c.n}</span>${c.q.length} preguntas</summary>${c.q.map((t,j)=>`<div class="qr"><span>${esc(t)}</span><b class="del" data-i="${i}" data-j="${j}">\ud83d\uddd1</b></div>`).join("")}</details>`).join("")}
 $("qlists").addEventListener("toggle",e=>{OPEN[e.target.dataset.i]=e.target.open?1:0},true);
-$("qlists").onclick=e=>{const d=e.target.closest(".del");if(!d)return;const i=d.dataset.i;if(CATS[i].q.length<=1){toast("Deja al menos 1 pregunta en cada categor铆a");return}CATS[i].q.splice(d.dataset.j,1);saveBank();renderBank()};
-$("nqb").onclick=()=>{if(!$("nq").value.trim())return;$("nqc").innerHTML="<label>驴En qu茅 categor铆a va?</label>"+CATS.map((c,i)=>`<span class="chip on" data-i="${i}" style="--cc:${c.c}">${c.n}</span>`).join("")};
+$("qlists").onclick=e=>{const d=e.target.closest(".del");if(!d)return;const i=d.dataset.i;if(CATS[i].q.length<=1){toast("Deja al menos 1 pregunta en cada categor\u00eda");return}CATS[i].q.splice(d.dataset.j,1);saveBank();renderBank()};
+$("nqb").onclick=()=>{if(!$("nq").value.trim())return;$("nqc").innerHTML="<label>\u00bfEn qu\u00e9 categor\u00eda va?</label>"+CATS.map((c,i)=>`<span class="chip on" data-i="${i}" style="--cc:${c.c}">${c.n}</span>`).join("")};
 $("nq").onkeydown=e=>{if(e.key=="Enter")$("nqb").click()};
 $("nqc").onclick=e=>{const i=e.target.dataset.i;if(i==null)return;CATS[i].q.unshift($("nq").value.trim());$("nq").value="";$("nqc").innerHTML="";OPEN[i]=1;saveBank();renderBank();toast("Pregunta agregada a "+CATS[i].n)};
 $("qreset").onclick=()=>{CATS.forEach((c,i)=>c.q=ORIG[i].slice());saveBank();renderBank()};
@@ -254,12 +263,12 @@ function vib(n){try{cfg.snd&&navigator.vibrate&&navigator.vibrate(n)}catch(e){}}
 let TS=[20,20,25,30],PEN=1,PREP=3;
 $("tune").innerHTML=CATS.map((c,i)=>`<div class="trow" id="tr${i}"><span class="pill" style="background:${c.c}">${c.n}</span><input type="text" id="tp${i}" value="${c.p}" inputmode="numeric"> pts <input type="text" id="ts${i}" value="${TS[i]}" inputmode="numeric"> seg</div>`).join("");
 function applyTune(){CATS.forEach((c,i)=>{c.p=Math.max(1,+$("tp"+i).value||c.p);TS[i]=Math.max(5,+$("ts"+i).value||TS[i])});PEN=Math.max(1,+$("penv").value||1);PREP=Math.max(1,+$("prepv").value||3);
- document.querySelector(".legend").innerHTML=CATS.map(c=>`<span><i class="dot" style="background:${c.c}"></i>${c.n} 路 +${c.p}</span>`).join("")}
+ document.querySelector(".legend").innerHTML=CATS.map(c=>`<span><i class="dot" style="background:${c.c}"></i>${c.n} \u00b7 +${c.p}</span>`).join("")}
 $("openCfg").onclick=()=>{syncCfg();show("cfg")};
 $("back").onclick=()=>{applyTune();show("setup")};
 $("addP").onclick=()=>nameInputs($("names").children.length+1);
 function board(el){el.innerHTML=players.map((p,i)=>({p,i})).sort((a,b)=>b.p.score-a.p.score).map(({p,i},k)=>
- `<div><div class="score"><span><b class="av" style="background:hsl(${i*67+250} 70% 55%)">${esc(p.name[0].toUpperCase())}</b>${esc(p.name)}${k==0&&p.score>0?" 馃憫":""}</span><b>${p.score}<small> / ${goal}</small></b></div><div class="bar"><i style="--w:${Math.min(100,p.score/Math.max(goal,1)*100)}%"></i></div></div>`).join("")}
+ `<div><div class="score"><span><b class="av" style="background:hsl(${i*67+250} 70% 55%)">${esc(p.name[0].toUpperCase())}</b>${esc(p.name)}${k==0&&p.score>0?" \ud83d\udc51":""}</span><b>${p.score}<small> / ${goal}</small></b></div><div class="bar"><i style="--w:${Math.min(100,p.score/Math.max(goal,1)*100)}%"></i></div></div>`).join("")}
 function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 $("start").onclick=()=>{
  const ns=[...$("names").querySelectorAll("input")].map((i,k)=>i.value.trim()||"Jugador "+(k+1));
@@ -274,9 +283,9 @@ $("see").onclick=()=>{
  cur={c:CATS[ci],t:decks[ci].pop()};
  const pill=$("cat");pill.textContent=cur.c.n;pill.style.background=cur.c.c;$("q").style.setProperty("--cc",cur.c.c);
  $("qtext").textContent=cur.t;$("worth").textContent="Vale +"+cur.c.p+(cur.c.p>1?" puntos":" punto");
- $("ans").textContent="Responder (+"+cur.c.p+")";$("skip").textContent=cfg.pen&&players[idx].score>0?"Pasar (鈭?+PEN+")":"Pasar";show("q");spin()};
+ $("ans").textContent="Responder (+"+cur.c.p+")";$("skip").textContent=cfg.pen&&players[idx].score>0?"Pasar (\u2212"+PEN+")":"Pasar";show("q");spin()};
 function next(){if(players.some(p=>p.score>=goal)&&(!cfg.round||idx==players.length-1))return fin();idx=(idx+1)%players.length;turn()}
-$("skip").onclick=()=>{if(cfg.pen&&players[idx].score>0){players[idx].score=Math.max(0,players[idx].score-PEN);sfx(180);toast("鈭?+PEN+" por pasar 馃槵")}next()};
+$("skip").onclick=()=>{if(cfg.pen&&players[idx].score>0){players[idx].score=Math.max(0,players[idx].score-PEN);sfx(180);toast("\u2212"+PEN+" por pasar \ud83d\ude2c")}next()};
 let tmr=null;
 function layoutOv(){const o=$("ov"),i=$("ovin");if(o.classList.contains("hide"))return;o.style.setProperty("--u",Math.min(innerWidth,innerHeight)+"px");
  if(innerHeight>innerWidth){i.style.cssText=`position:absolute;width:${innerHeight}px;height:${innerWidth}px;top:50%;left:50%;transform:translate(-50%,-50%) rotate(90deg);padding:0 calc(6% + env(safe-area-inset-top,0px)) 0 calc(6% + env(safe-area-inset-bottom,0px))`}else i.style.cssText="padding:0 calc(6% + env(safe-area-inset-right,0px)) 0 calc(6% + env(safe-area-inset-left,0px))"}
@@ -284,7 +293,7 @@ addEventListener("resize",layoutOv);
 async function goFull(){try{await document.documentElement.requestFullscreen();await screen.orientation.lock("landscape")}catch(e){}}
 function leaveFull(){try{screen.orientation.unlock()}catch(e){}try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}}
 $("ans").onclick=()=>{
- $("ovcat").textContent=cur.c.n+" 路 +"+cur.c.p;$("ovcat").style.background=cur.c.c;$("ov").style.setProperty("--cc",cur.c.c);$("ovq").textContent=cur.t;
+ $("ovcat").textContent=cur.c.n+" \u00b7 +"+cur.c.p;$("ovcat").style.background=cur.c.c;$("ov").style.setProperty("--cc",cur.c.c);$("ovq").textContent=cur.t;
  $("ov").classList.remove("hide");layoutOv();goFull();
  let n=PREP,T=TS[CATS.indexOf(cur.c)],t=T,phase=0;$("ovt").textContent=PREP;$("ov").classList.remove("urgent");$("rf").style.transition="none";$("rf").style.strokeDashoffset=339.3;void $("rf").getBoundingClientRect();$("rf").style.transition="";
  clearInterval(tmr);
@@ -302,9 +311,9 @@ function fin(){const w=[...players].sort((a,b)=>b.score-a.score)[0];$("winner").
 function toast(m){const t=$("toast");t.textContent=m;t.classList.remove("show");void t.offsetWidth;t.classList.add("show");vib(60)}
 /* cartas sorpresa eliminadas
 function special(p){if(!cfg.sp||Math.random()>.2)return;const r=Math.random();
- if(r<.4){p.score+=cur.c.p;toast("鈿?隆Puntos dobles! +"+cur.c.p+" extra")}
- else if(r<.75){const o=players.filter(x=>x!=p).sort((a,b)=>b.score-a.score)[0];if(o&&o.score>0){o.score--;p.score++;toast("馃暤锔?Le robas 1 punto a "+o.name)}else{p.score++;toast("馃巵 Regalo: +1 punto")}}
- else{toast("馃幆 "+players[Math.random()*players.length|0].name+" debe contar un secreto extra")}}*/
+ if(r<.4){p.score+=cur.c.p;toast("\u26a1 \u00a1Puntos dobles! +"+cur.c.p+" extra")}
+ else if(r<.75){const o=players.filter(x=>x!=p).sort((a,b)=>b.score-a.score)[0];if(o&&o.score>0){o.score--;p.score++;toast("\ud83d\udd75\ufe0f Le robas 1 punto a "+o.name)}else{p.score++;toast("\ud83c\udf81 Regalo: +1 punto")}}
+ else{toast("\ud83c\udfaf "+players[Math.random()*players.length|0].name+" debe contar un secreto extra")}}*/
 function spin(){const q=$("q"),pl=$("cat"),f=cur.c;q.classList.add("spin");let k=0;const iv=setInterval(()=>{const c=CATS[k++%4];pl.textContent=c.n;pl.style.background=c.c;q.style.setProperty("--cc",c.c);sfx(500+k*40)},90);
  setTimeout(()=>{clearInterval(iv);pl.textContent=f.n;pl.style.background=f.c;q.style.setProperty("--cc",f.c);q.classList.remove("spin");sfx(1000);vib(80)},1100)}
 $("rev").onclick=()=>{players.forEach(p=>p.score=0);idx=0;decks=CATS.map(()=>[]);turn()};

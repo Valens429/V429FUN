@@ -3,6 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="google" content="notranslate">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#6d4aff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sin Filtro">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzhlNWJmZiIvPjxzdG9wIG9mZnNldD0iLjU1IiBzdG9wLWNvbG9yPSIjZmYzZDdmIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZmY4YTNkIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjEyMCIgaGVpZ2h0PSIxMjAiIHJ4PSIyOCIgZmlsbD0idXJsKCNsZykiLz48cGF0aCBkPSJNNjAgMTRDNjYgMzQgODggNDQgODggNzBDODggOTAgNzUgMTA0IDYwIDEwNEM0NSAxMDQgMzIgOTAgMzIgNzBDMzIgNTggMzggNTAgNDQgNDRDNDYgNTQgNTIgNTggNTYgNTZDNTQgNDAgNTQgMjggNjAgMTRaIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTUwIDcwQzUwIDU5IDcwIDU5IDcwIDcxQzcwIDc5IDYwIDc5IDYwIDg4IiBmaWxsPSJub25lIiBzdHJva2U9IiNlMDE0NWEiIHN0cm9rZS13aWR0aD0iNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PGNpcmNsZSBjeD0iNjAiIGN5PSI5OCIgcj0iNC42IiBmaWxsPSIjZTAxNDVhIi8+PC9zdmc+">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sin Filtro &#183; Juego de preguntas</title>
 <style>
@@ -125,6 +135,11 @@ html{background:var(--bg);-webkit-text-size-adjust:100%}
 body::before,body::after{content:"";position:fixed;left:0;right:0;z-index:10;pointer-events:none;background:color-mix(in srgb,var(--bg) 75%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 body::before{top:0;height:env(safe-area-inset-top,0px)}
 body::after{bottom:0;height:env(safe-area-inset-bottom,0px)}
+.logo{display:block;margin:6px auto 0;width:96px;height:96px;filter:drop-shadow(0 10px 18px rgba(228,87,46,.45));animation:wig 3s ease-in-out infinite}
+#setup>h1,#setup>p.sub{text-align:center}
+.prow{display:flex;gap:8px;align-items:flex-start}
+.prow input{flex:1;margin-bottom:8px}
+.prow .rm{width:46px;height:46px;padding:0;flex:none;font-size:22px;line-height:1;box-shadow:none;color:var(--c4)}
 </style>
 </head>
 <body>
@@ -132,7 +147,8 @@ body::after{bottom:0;height:env(safe-area-inset-bottom,0px)}
 <main>
 
 <section id="setup">
-  <h1><span class="flame">&#128293;</span> <span class="grad">Sin Filtro</span></h1>
+  <svg class="logo" viewBox="0 0 120 120" role="img" aria-label="Sin Filtro"><defs><linearGradient id="lgx" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8e5bff"/><stop offset=".55" stop-color="#ff3d7f"/><stop offset="1" stop-color="#ff8a3d"/></linearGradient></defs><rect width="120" height="120" rx="28" fill="url(#lgx)"/><path d="M60 14C66 34 88 44 88 70C88 90 75 104 60 104C45 104 32 90 32 70C32 58 38 50 44 44C46 54 52 58 56 56C54 40 54 28 60 14Z" fill="#fff"/><path d="M50 70C50 59 70 59 70 71C70 79 60 79 60 88" fill="none" stroke="#e0145a" stroke-width="7" stroke-linecap="round"/><circle cx="60" cy="98" r="4.6" fill="#e0145a"/></svg>
+  <h1><span class="grad">Sin Filtro</span></h1>
   <p class="sub">Pasen el celu, vean su pregunta en secreto y decidan: &#191;responder y sumar, o pasar y salvarse? Solo mayores de 18.</p>
   <div class="legend">
     <span><i class="dot" style="background:var(--c1)"></i>Soft &#183; +1</span>
@@ -215,6 +231,7 @@ body::after{bottom:0;height:env(safe-area-inset-bottom,0px)}
 </div></div>
 
 <script>
+try{if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js")}catch(e){}
 const CATS=[
 {n:"SOFT",p:1,c:"var(--c1)",q:[
 "\u00bfCu\u00e1l es tu miedo m\u00e1s irracional?","\u00bfCu\u00e1l fue tu peor corte de pelo?","\u00bfQu\u00e9 canci\u00f3n te da verg\u00fcenza admitir que te gusta?","\u00bfCu\u00e1l fue la mentira m\u00e1s tonta que dijiste de ni\u00f1o?","\u00bfQu\u00e9 app tienes en el celular que nadie sabe?","\u00bfCu\u00e1l fue tu peor cita o salida?","\u00bfQu\u00e9 h\u00e1bito raro tienes cuando est\u00e1s solo?","\u00bfA qu\u00e9 famoso le tuviste un crush de adolescente?","\u00bfQu\u00e9 fue lo m\u00e1s vergonzoso que te pas\u00f3 en la escuela?","\u00bfQu\u00e9 apodo odiabas de chico?","\u00bfQu\u00e9 pel\u00edcula o serie te hizo llorar y nunca lo admitiste?","\u00bfCu\u00e1l es tu mayor man\u00eda?"]},
@@ -231,13 +248,14 @@ const $=id=>document.getElementById(id);
 let players=[],idx=0,goal=30,decks=[],cur=null;
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 function show(id){["setup","cfg","pass","q","judge","end"].forEach(s=>$(s).classList.toggle("hide",s!==id));window.scrollTo(0,0)}
-function nameInputs(n){const box=$("names");const old=[...box.querySelectorAll("input")].map(i=>i.value);box.innerHTML="";
- for(let i=0;i<n;i++){const e=document.createElement("input");e.type="text";e.placeholder="Jugador "+(i+1);e.value=old[i]||"";box.appendChild(e)}}
+function nameInputs(n,vals){const box=$("names");const old=vals||[...box.querySelectorAll("input")].map(i=>i.value);box.innerHTML="";
+ for(let i=0;i<n;i++){const r=document.createElement("div");r.className="prow";r.innerHTML='<input type="text" maxlength="20"><button class="alt rm" type="button" aria-label="Quitar">&times;</button>';r.firstChild.value=old[i]||"";r.lastChild.onclick=()=>{if(box.children.length<=2){toast("M\u00ednimo 2 jugadores");return}r.remove();renum()};box.appendChild(r)}renum()}
+function renum(){[...$("names").querySelectorAll("input")].forEach((e,i)=>e.placeholder="Jugador "+(i+1))}
 let cfg={cats:[1,1,1,1],pen:1,time:1,round:1,sp:1,snd:1},custom=[[],[],[],[]];
 const LS=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
 const SV=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
-const saved=LS("sf_names");nameInputs(saved&&saved.length?saved.length:3);
-if(saved)[...$("names").children].forEach((e,i)=>e.value=saved[i]||"");
+const saved=LS("sf_names");nameInputs(Math.max(2,saved&&saved.length||2),saved||[]);
+
 if(LS("sf_custom"))custom=LS("sf_custom");
 const OP=[["pen","Pasar resta puntos"],["round","Terminar la ronda antes de ganar"],["snd","Sonidos y vibraci\u00f3n"]];
 $("opts").innerHTML=OP.map(([k,t])=>`<label class="tg"><input type="checkbox" data-k="${k}" checked>${t}</label>`).join("");
@@ -271,8 +289,8 @@ function board(el){el.innerHTML=players.map((p,i)=>({p,i})).sort((a,b)=>b.p.scor
  `<div><div class="score"><span><b class="av" style="background:hsl(${i*67+250} 70% 55%)">${esc(p.name[0].toUpperCase())}</b>${esc(p.name)}${k==0&&p.score>0?" \ud83d\udc51":""}</span><b>${p.score}<small> / ${goal}</small></b></div><div class="bar"><i style="--w:${Math.min(100,p.score/Math.max(goal,1)*100)}%"></i></div></div>`).join("")}
 function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 $("start").onclick=()=>{
- const ns=[...$("names").querySelectorAll("input")].map((i,k)=>i.value.trim()||"Jugador "+(k+1));
- if(ns.length<2){alert("Se necesitan al menos 2 jugadores");return}
+ const ns=[...$("names").querySelectorAll("input")].map(i=>i.value.trim()).filter(Boolean);
+ if(ns.length<2){toast("Escribe al menos 2 nombres");return}
  applyTune();goal=Math.max(1,parseInt($("goal").value)||30);SV("sf_names",ns);
  
  players=ns.map(n=>({name:n,score:0}));idx=0;decks=CATS.map(()=>[]);turn()};
